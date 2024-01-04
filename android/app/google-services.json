@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "892581690989",
+    "project_id": "ride-with-passenger-go",
+    "storage_bucket": "ride-with-passenger-go.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892581690989:android:4599250db269739a6d8964",
+        "android_client_info": {
+          "package_name": "com.example.ride_with_passenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLTE6zXwnrSJjmgLDCiNqMSQ1dQFzqCL4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
