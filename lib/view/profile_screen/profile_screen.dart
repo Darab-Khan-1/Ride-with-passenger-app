@@ -14,6 +14,8 @@ import '../../constants/colors.dart';
 import '../../controller/proflie_controller/proflie_controller.dart';
 import 'package:lottie/lottie.dart';
 
+import '../auth/change_password.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
@@ -57,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               IconButton(
                 icon: Icon(Icons.lock, color: kWhiteColor),
                 onPressed: () {
-                  // Get.to(ChangePasswordScreen());
+                  Get.to(ChangePasswordScreen());
                 },
               )
             ],

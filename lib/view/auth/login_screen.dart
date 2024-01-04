@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ride_with_passenger/view/bottom_nav_bar/bottom_nav_bar_view.dart';
 
@@ -11,10 +12,12 @@ class LoginScreen extends StatelessWidget {
    LoginScreen({super.key});
   final _authcontroller = Get.put(AuthController());
   final RxBool isValid = true.obs;
-  final RxBool isPasswordVisisble = false.obs;
+  final RxBool isPasswordVisible = false.obs;
    GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+   final emailController = TextEditingController().obs;
+   final passwordController = TextEditingController().obs;
   checkValidity() {
-    if (_authcontroller.emailController.value.text.isNotEmpty && _authcontroller.passwordController.value.text.isNotEmpty) {
+    if (emailController.value.text.isNotEmpty && passwordController.value.text.isNotEmpty) {
       isValid.value = true;
     } else {
       isValid.value = false;
@@ -47,11 +50,10 @@ class LoginScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                    Image.asset('assets/images/ridewithpassngers.png',height: 150,width: 230,),
-                    SizedBox(height: 60,),
+                    const Gap(60),
                     TextInputFieldWidget(
-                      controller: _authcontroller.emailController.value,
+                      controller: emailController.value,
                       textInputType: TextInputType.emailAddress,
-                      autoFillHints: [AutofillHints.email],
                       isEmail: true,
                       lable: 'Email',
                       hintText: 'Enter Email',
@@ -61,26 +63,26 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: Icon(Icons.email),
 
                     ),
-                    SizedBox(height: 20,),
+                    const Gap(20),
                     Obx(() => TextInputFieldWidget(
-                      controller: _authcontroller.passwordController.value,
+                      controller: passwordController.value,
                       textInputType: TextInputType.emailAddress,
                       lable: 'Password',
                       hintText: 'Enter Password',
-                      obscure: isPasswordVisisble.value,
+                      obscure: isPasswordVisible.value,
                       maxLines: 1,
                       suffixIcon: GestureDetector(
                         onTap: (){
-                          isPasswordVisisble.value = !isPasswordVisisble.value;
+                          isPasswordVisible.value = !isPasswordVisible.value;
                         },
-                        child: Icon(isPasswordVisisble.value ? Icons.visibility_off : Icons.visibility),
+                        child: Icon(isPasswordVisible.value ? Icons.visibility_off : Icons.visibility),
                       ),
                       onChange: (value){
                         checkValidity();
                       },
                       prefixIcon: Icon(Icons.lock),
                     )),
-                    SizedBox(height: 20,),
+                    const Gap(20),
                     KElevatedButton(
                       title: 'Login',
                       isEnable: isValid,

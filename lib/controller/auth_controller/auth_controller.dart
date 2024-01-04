@@ -1,6 +1,14 @@
 
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../../Services/user_preferences/user_preferences.dart';
+import '../../constants/app_url/app_url.dart';
+import '../../data/network/network_api_services.dart';
+import '../../utils/utils.dart';
 
 
 class AuthController extends GetxController{
@@ -10,94 +18,78 @@ class AuthController extends GetxController{
     super.onInit();
   }
   // final _api = LoginRepository();
-  final emailController = TextEditingController().obs;
-  final passwordController = TextEditingController().obs;
-  final changePasswordController = TextEditingController().obs;
-  final newPasswordController = TextEditingController().obs;
-  final RxBool isValid = false.obs;
-  checkValidity() {
-    if (newPasswordController.value.text.isNotEmpty
-    ) {
-      isValid.value = true;
-    } else {
-      isValid.value = false;
+final _apiService = NetworkApiServices();
+
+  UserPreference userPreference = UserPreference();
+  Future<dynamic> login(BuildContext context, {required String email, required String password}) async {
+    try {
+      loadingStatusDialog(context, title: 'Signing in');
+      Map<String, dynamic> data = {
+        "email": email,
+        "password": password,
+      };
+      final response = _apiService.postApi(data, AppUrl.loginApi);
+      // if(response['status_code'] == 200){
+      //   Get.back();
+      //   // userPreference.saveUser(response['data']);
+      //   // Get.offAll(BottomNavigationBarScreen());
+      // }
+      // else if(response['status_code'] == 401){
+      //   Get.back();
+      //   Utils.snackBar('Error', response['error']);
+      // }
+      // else{
+      //   Get.back();
+      //   Utils.snackBar('Error', response['error']);
+      // }
+    } on SocketException catch (e) {
+      Get.back();
+      errorOverlay(context,
+          title: 'Signin Failed',
+          message: e.message,
+          okLabel: 'ok');
+    }
+    catch (e) {
+      Get.back();
+      errorOverlay(context,
+          title: 'Signin Failed', message: "Something went Wrong", okLabel: 'ok');
+      log(e.toString());
     }
   }
-  // UserPreference userPreference = UserPreference();
-  // Future<void> login(BuildContext context) async {
-  //   try {
-  //     loadingStatusDialog(context, title: 'Signing in');
-  //     Map<String, dynamic> data = {
-  //       "email": emailController.value.text,
-  //       "password": passwordController.value.text,
-  //     };
-  //     _api.loginApi(data).then((value) {
-  //       if (value['status_code'] == 200) {
-  //         Get.back();
-  //         Data userData = Data(
-  //           bearerToken: value['data']['bearer_token'],
-  //         );
-  //         LoginModel userModel = LoginModel(
-  //           statusCode: value['status_code'],
-  //           message: value['message'],
-  //           error: value['error'],
-  //           data: userData,
-  //           isLogin: true,
-  //         );
-  //         userPreference.saveUser(userModel).then((value) {
-  //           // releasing resources because we are not going to use this
-  //           Get.delete<AuthController>();
-  //           emailController.value.clear();
-  //           passwordController.value.clear();
-  //           Get.offAll(BottomNavigationBarScreen())!.then((value) {});
-  //           Utils.snackBar('Login', 'Login successfully');
-  //         }).onError((error, stackTrace) {
-  //           Get.back();
-  //           Utils.snackBar('Error', error.toString());
-  //         });
-  //       } else if(value['status_code'] == 400) {
-  //         Get.back();
-  //         errorOverlay(context,message: value['message'],title: 'Signin Failed',okLabel: 'ok');
-  //         // Go back to SignInView
-  //       }
-  //     }).onError((error, stackTrace) {
-  //       Get.back(); // Close the dialog in case of error
-  //       errorOverlay(context,
-  //           title: 'Signin Failed', message: error.toString(), okLabel: 'ok');
-  //       print("Error while LoginIn ${error.toString()}");// Go back to SignInView in case of error
-  //     });
-  //   } catch (e) {
-  //     Get.back();
-  //     errorOverlay(context,
-  //         title: 'Signin Failed', message: e.toString(), okLabel: 'ok');
-  //     log(e.toString());
-  //   }
-  // }
-  // Future<void> changePassword(BuildContext context) async {
-  //   try {
-  //     loadingStatusDialog(context, title: 'updating password');
-  //     Map<String, dynamic> data = {
-  //       "password": newPasswordController.value.text,
-  //     };
-  //     _api.updatePassword(data).then((value){
-  //       if(value['status_code'] == 200){
-  //         Get.back();
-  //         Utils.snackBar('Password', value['message']);
-  //         newPasswordController.value.clear();
-  //       }
-  //       else{
-  //         Get.back();
-  //         Utils.snackBar('Error', value['error']);
-  //       }
-  //     }).onError((error, stackTrace) {
-  //       Get.back();
-  //       Utils.snackBar('Error', 'Network Error');
-  //     });
-  //   } catch (e) {
-  //     errorOverlay(context,
-  //         title: 'Updation Failed', message: e.toString(), okLabel: 'ok');
-  //     log(e.toString());
-  //   }
-  // }
+  Future<void> changePassword(BuildContext context, {required String oldPassword, required String newPassword}) async {
+    try {
+      loadingStatusDialog(context, title: 'updating password');
+      Map<String, dynamic> data = {
+        "password": newPassword,
+      };
+      // final response = _apiService.updateApi(data, AppUrl.changePasswordApi);
+      // if(response['status_code'] == 200){
+      //   Get.back();
+      //   Utils.snackBar('Password', response['message']);
+      //   // newPasswordController.value.clear();
+      //   // oldPasswordController.value.clear();
+      //   // logout(context);
+      // }
+      // else if (response['status_code'] == 401){
+      //   Get.back();
+      //   Utils.snackBar('Error', response['error']);
+      // }
+      // else{
+      //   Get.back();
+      //   Utils.snackBar('Error', response['error']);
+      // }
+    } on SocketException catch (e) {
+      Get.back();
+      errorOverlay(context,
+          title: 'Updation Failed',
+          message: e.message,
+          okLabel: 'ok');
+    }
+    catch (e) {
+      errorOverlay(context,
+          title: 'Updation Failed', message: e.toString(), okLabel: 'ok');
+      log(e.toString());
+    }
+  }
 
 }
