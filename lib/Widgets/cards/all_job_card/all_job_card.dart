@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
 import '../../../constants/colors.dart';
 import '../../../controller/card_controller/card_controller.dart';
+import '../../../model/all_trip_model/all_trip_model.dart';
+import '../../dialog/custom_alert_dialog.dart';
 import '../../form_fields/expandable_text.dart';
 import '../../form_fields/k_text.dart';
 import 'package:intl/intl.dart';
@@ -15,36 +18,27 @@ class AllJobCards extends StatelessWidget {
   final String estimatedTime;
   final String deliverDate;
   final String pickUpdate;
-  final List<String> pickUpTime;
-  final List<String> deliveryTime;
   String? pickupZip;
   String? deliveryZip;
   final String pickUpday;
   final String pickUpmonth;
   final String loadId;
-  final String status;
   final String pickupAddress;
   final String deliverAddress;
   final double? pickupLat;
   final double? pickupLng;
   final double? dropLat;
   final double? dropLng;
-  final String weight;
+  final int? tripId;
   final String distance;
-  final String? type;
-  final String deliveryDay;
-  final String deliveryDate;
-  final String deliveryYear;
-  final String note;
+   List<AllTripStops> allTripStops ;
   final CardController _cardController = Get.put(CardController());
   AllJobCards({
     Key? key,
     this.pickupZip,
-    required this.pickUpTime,
-    required this.deliveryTime,
     this.deliveryZip,
     required this.estimatedTime,
-    required this.status,
+    required this.tripId,
     required this.pickupLat,
     required this.pickupLng,
     required this.dropLat,
@@ -57,16 +51,12 @@ class AllJobCards extends StatelessWidget {
     required this.loadId,
     required this.pickupAddress,
     required this.deliverAddress,
-    required this.weight,
     required this.distance,
-    required this.type,
-    required this.deliveryDay,
-    required this.deliveryDate,
-    required this.deliveryYear,
-    required this.note,
+    required this.allTripStops,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Obx(() {
       return Card(
         margin: const EdgeInsets.all(8.0),
@@ -99,7 +89,7 @@ class AllJobCards extends StatelessWidget {
                                 bottomLeft: Radius.circular(10)),
                               color: kMainColor,
                           ),
-                          height: 280,
+                          height: 250,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -154,7 +144,7 @@ class AllJobCards extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
@@ -170,7 +160,28 @@ class AllJobCards extends StatelessWidget {
                                 ),
                                 Row(
                                   children: [
-                                    loadStatus(status, DateTime.parse(pickUpDate),loadId,  context),
+                                    GestureDetector(
+                                      onTap: () {
+                                        TripController().startTrip(tripId!);
+                                        },
+                                        child: Container(
+                                          width: 80,
+                                          alignment: Alignment.center,
+                                          decoration: new BoxDecoration(
+                                              color: Colors.green.shade300,
+                                              borderRadius: new BorderRadius.all(Radius.circular(5))),
+                                          child: Padding(
+                                              padding: const EdgeInsets.all(4.0),
+                                              child: Text(
+                                                "Start",
+                                                style: TextStyle(
+                                                    color: kWhiteColor,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              )),
+                                        )
+                                    ),
                                   ],
                                 )
                               ],
@@ -203,22 +214,14 @@ class AllJobCards extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.6, // Change this value as needed
-                                  child: Row(
-                                    children: [
-                                      ExpandableText(
-                                        text: pickUpDate,
-                                        style: const TextStyle(
-                                          color: kBlackColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      pickUpTime.length == 1 ? KText(text: pickUpTime.first) :
-                                          KText(text: pickUpTime.first + " - " + pickUpTime.last),
-                                    ],
+                                  width: MediaQuery.of(context).size.width * 0.6, // Change this value as needed
+                                  child: ExpandableText(
+                                    text: pickUpDate,
+                                    style: const TextStyle(
+                                      color: kBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -252,22 +255,14 @@ class AllJobCards extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width *
-                                      0.6, // Change this value as needed
-                                  child: Row(
-                                    children: [
-                                      ExpandableText(
-                                        text: deliverDate,
-                                        style: const TextStyle(
-                                          color: kBlackColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      SizedBox(width: 5,),
-                                      deliveryTime.length == 1 ? KText(text: deliveryTime.first) :
-                                      KText(text: deliveryTime.first + " - " + deliveryTime.last),
-                                    ],
+                                  width: MediaQuery.of(context).size.width * 0.6, // Change this value as needed
+                                  child: ExpandableText(
+                                    text: deliverDate,
+                                    style: const TextStyle(
+                                      color: kBlackColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -283,8 +278,6 @@ class AllJobCards extends StatelessWidget {
                                   Column(
                                       children: [
                                         infoColumn("Estimated Time", estimatedTime),
-                                        SizedBox(height: 10,),
-                                        infoColumn("Type", type),
                                       ]),
                                   const VerticalDivider(
                                     color: kGreyColor,
@@ -293,12 +286,61 @@ class AllJobCards extends StatelessWidget {
                                       children:
                                       [
                                         infoColumn("Distance", distance),
-                                        SizedBox(height: 10,),
-                                        infoColumn("Weight", weight),
                                       ]),
                                 ],
                               ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            allTripStops.isEmpty?Container():
+                            Row(
+                              children: [
+                                KText(text: "Stops: ", color: kMainColor, fontSize: 16, fontWeight: FontWeight.w500,),
+                                SizedBox(width: 10,),
+                                KText(text: "${allTripStops.length}", color: kBlackColor, fontSize: 14, fontWeight: FontWeight.w500,),
+                                Expanded(child: Container()),
+                                OutlinedButton(child: KText(text: 'Details', color: kMainColor,fontSize: 16), onPressed: (){
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context){
+                                        return CustomAlertDialog(
+                                          title: "Trip Stops",
+                                          content: Container(
+                                            width: size.width,
+                                            height: size.height * 0.3,
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                  child: ListView.builder(
+                                                      itemCount: allTripStops.length,
+                                                      itemBuilder: (context, index){
+                                                        var stop = allTripStops[index];
+                                                        return ListTile(
+                                                          leading: CircleAvatar(
+                                                            backgroundColor: kMainColor.withOpacity(0.3),
+                                                            child: Text("${index+1}"),
+                                                          ),
+                                                          title: Text(stop.location!),
+                                                          focusColor: kMainColor,
+                                                          // Customize the design of each list item here
+                                                          // For example, you can add icons, different text styles, etc.
+                                                        );
+                                                      }),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                  ) ;
+                                },
+
+                                )
+
+                              ],
+                            )
                           ],
                         ),
                       ),

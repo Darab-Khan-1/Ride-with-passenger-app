@@ -11,98 +11,81 @@ import '../../controller/history_controller/history_controller.dart';
 
 class HistoryScreen extends StatelessWidget {
   HistoryScreen({Key? key}) : super(key: key);
-  DateTime? parsedDate;
+  DateTime? parsedDeliveryDate;
   DateTime? parsePickUpDate;
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HistoryController>(
         init: HistoryController(),
-        builder: (historyVM) {
+        builder: (controller) {
           return Scaffold(
             appBar: AppBar(
               title: Text("History"),
             ),
             body: Obx(() {
-              switch (historyVM.rxRequestStatus.value) {
+              switch (controller.rxRequestStatus.value) {
                 case Status.LOADING:
                   return const Center(child: CircularProgressIndicator());
                 case Status.ERROR:
-                  if (historyVM.error.value == 'No internet') {
+                  if (controller.error.value == 'No internet') {
                     return KText(text: 'No Internet', color: Colors.red);
                   } else {
                     return KText(text: 'Something went wrong', color: Colors.red);
                   }
                 case Status.COMPLETED:
+                  if(controller.historyList.value.data!.isEmpty){
+                    return Center(child: Text("No History Trips"));
+                  }
                   return ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      itemCount: 1,
+                      itemCount: controller.historyList.value.data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        // var deliveryDateString = historyVM
-                        //     .tripsList.value.data![index].deliveryDate;
-                        // var pickupDateString = historyVM
-                        //     .tripsList.value.data![index].pickupDate;
-                        // try {
-                        //   parsedDate = DateFormat("MM-dd-yy HH:mm")
-                        //       .parse(deliveryDateString!);
-                        // } catch (e) {
-                        //   print('Failed to parse date: $e');
-                        //   // Handle the error in a way that makes sense for your application
-                        //   parsedDate = DateTime
-                        //       .now(); // provide a default value when parsing fails
-                        // }
-                        //
-                        // if (pickupDateString != null &&
-                        //     pickupDateString != 'ASAP') {
-                        //   try {
-                        //     parsePickUpDate =
-                        //         DateFormat("MM-dd-yy HH:mm")
-                        //             .parse(pickupDateString!);
-                        //   } catch (e) {
-                        //     print('Failed to parse date: $e');
-                        //     parsePickUpDate = DateTime
-                        //         .now(); // provide a default value when parsing fails
-                        //   }
-                        // }
-                        return HistoryJobCards(
-                          dimension: "23",
-                          amount: "2343",
-                          dockLevel: "Yes",
-                          hazardous: "Yes",
-                          note: "hlkjahdslkjfhal",
-                          pickUpmonth: DateFormat('MMMM').format(DateTime.now()),
-                          pickUpdate: DateFormat('d').format(DateTime.now()),
-                          pickUpday:  DateFormat('EEEE').format(DateTime.now()),
-                          pickUpTime: DateFormat('hh:mm a').format(DateTime.now()),
-                          deliverTime: DateFormat('hh:mm a').format(DateTime.now()),
-                          deliveryDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                          deliveryDay: DateFormat('dd').format(DateTime.now()),
-                          deliveryYear: DateFormat('yyyy').format(DateTime.now()),
-                          loadId: "1",
-                          price: "100",
-                          pickupAddress: "Srinagar",
-                          deliverAddress: "Jammu",
-                          // time: DateFormat("HH:mm").format( DateFormat('MM-dd-yy HH:mm').parse(
-                          //     historyVM.tripsList.value.data![index]
-                          //         .deliveryDate!)),
-                          weight: "100",
-                          distance: "100",
-                          type: "Truck",
-                          piece: "98789",
-                          stackable: 'Yes',
+                        var data = controller.historyList.value.data![index];
+                        var deliveryDateString = controller.historyList.value.data![index].deliveryDate;
+                        var pickupDateString = controller.historyList.value.data![index].pickupDate;
+                        try {
+                          parsedDeliveryDate = DateFormat("MM-dd-yy HH:mm")
+                              .parse(deliveryDateString!);
+                        } catch (e) {
+                          print('Failed to parse date: $e');
+                          // Handle the error in a way that makes sense for your application
+                          // provide a default value when parsing fails
+                        }
 
-                          // deliverDate: '16',
-                          // deliverDay: 'Friday',
-                          // deliverMonth: 'June',
-                          // deliverTime: '10:51',
-                          // pickupName: historyVM
-                          //     .tripsList.value.data![index].weight
-                          //     ?.toString() ??
-                          //     "",
-                          // deliverName: 'Dashiell',
-                          // podImage: ImageAssets.lady,
-                          // unloadingImage: ImageAssets.companyLogo,
+                        if (pickupDateString != null &&
+                            pickupDateString != 'ASAP') {
+                          try {
+                            parsePickUpDate =
+                                DateFormat("MM-dd-yy HH:mm")
+                                    .parse(pickupDateString!);
+                          } catch (e) {
+                            print('Failed to parse date: $e');
+                             // provide a default value when parsing fails
+                          }
+                        }
+                        return HistoryJobCards(
+                          pickUpmonth: DateFormat('MMMM').format(parsePickUpDate!),
+                          pickUpdate: DateFormat('d').format(parsePickUpDate!),
+                          pickUpday:  DateFormat('EEEE').format(parsePickUpDate!),
+                          pickUpTime: DateFormat('hh:mm a').format(parsePickUpDate!),
+                          deliverTime: DateFormat('hh:mm a').format(parsedDeliveryDate!),
+                          deliveryDate: DateFormat('yyyy-MM-dd').format(parsedDeliveryDate!),
+                          deliveryDay: DateFormat('dd').format(parsedDeliveryDate!),
+                          deliveryYear: DateFormat('yyyy').format(parsedDeliveryDate!),
+                          loadId: data.id.toString(),
+                          pickupAddress: data.pickupLocation!,
+                          deliverAddress: data.deliveryLocation!,
+                          dropLat: double.parse(data.dropLat!),
+                          dropLng: double.parse(data.dropLong!),
+                          pickLat: double.parse(data.lat!),
+                          pickLng: double.parse(data.long!),
+                          stops: data.stops!,
+                          travelTime: data.estimatedTime!,
+                          miles: data.estimatedDistance!,
+                          customerName: data.customerName!,
+                          customerPhone: data.customerPhone!,
                         );
                       });
               }

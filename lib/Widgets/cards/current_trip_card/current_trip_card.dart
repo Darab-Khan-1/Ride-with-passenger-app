@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:ride_with_passenger/Widgets/form_fields/expandable_text.dart';
+import 'package:ride_with_passenger/Widgets/form_fields/k_text.dart';
 import 'package:ride_with_passenger/model/on_going_trip_model/ongoing_trip_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../../constants/colors.dart';
@@ -45,15 +48,7 @@ OnGoingTripData model = OnGoingTripData();
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Load Id. ${model.id}',
-                        style: const TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: kGreyColor,
-                          fontSize: 16,
-                        ),
-                      ),
+                      ExpandableText(text: "Trip Id: ${model.id}", style: TextStyle(color: kBlackColor, fontSize: 18, fontWeight: FontWeight.bold),),
                       //  Text(
                       //   _statusHeading(model.status!),
                       //   style: TextStyle(
@@ -69,11 +64,12 @@ OnGoingTripData model = OnGoingTripData();
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           color: kBlackColor,
-                          fontSize: 15,
+                          fontSize: 18,
                         ),
                       ),
                     ],
                   ),
+                  OutlinedButton(onPressed: (){}, child: KText(text: "Stop", color: kMainColor, fontSize: 18)),
                 ],
               ),
               const Divider(
@@ -139,7 +135,7 @@ OnGoingTripData model = OnGoingTripData();
               // ),
               // model.status == 'in-transit'?
               Text(
-                model.deliveryLocation!,
+                model.pickupLocation!,
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   fontStyle: FontStyle.normal,
@@ -150,7 +146,7 @@ OnGoingTripData model = OnGoingTripData();
                 overflow: TextOverflow.visible,
               ),
               Text(
-                model.pickupLocation!,
+                model.deliveryLocation!,
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   fontStyle: FontStyle.normal,

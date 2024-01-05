@@ -12,9 +12,21 @@ import 'package:ride_with_passenger/controller/trip_controller/trip_controller.d
 import '../../Widgets/cards/current_trip_card/current_trip_card.dart';
 import '../../Widgets/form_fields/k_text.dart';
 import '../../constants/enums.dart';
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final _tripController = Get.put(TripController());
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tripController.OngoingTrip();
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

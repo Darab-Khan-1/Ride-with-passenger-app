@@ -8,4 +8,10 @@ class AppUrl {
   static const String getProfileApi = '$baseUrl/api/profile';
   static const String updateProfileApi = '$baseUrl/api/update/profile';
   static const String logoutApi = '$baseUrl/api/logout';
+  static const String ongoingTripApi = '$baseUrl/api/ongoing/trip';
+  static const String startTripApi = '$baseUrl/api/start/trip';
+  static const String endTripApi = '$baseUrl/api/end/trip';
+  static const String stopTripApi = '$baseUrl/api/stop/trip';
+  static const String getAllTripApi = '$baseUrl/api/all/trips';
+  static const String completedTrips= '$baseUrl/api/completed/trips';
 }
