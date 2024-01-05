@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../constants/colors.dart';
 import '../../../constants/enums.dart';
-import '../../../controller/trip_controller/trip_controller.dart';
+import '../../../controller/all_job_controller/all_job_controller.dart';
 StatelessWidget loadStatus(
     String status, DateTime pickupDate, String id, BuildContext context) {
   final allJobViewModel = Get.put(AllJobViewModel());

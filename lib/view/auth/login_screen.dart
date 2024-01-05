@@ -88,8 +88,7 @@ class LoginScreen extends StatelessWidget {
                       isEnable: isValid,
                       onPressed: (){
                         if(_formkey.currentState!.validate()){
-                          // _authcontroller.login(context);
-                          Get.offAll(BottomNavBarScreen());
+                          _authcontroller.login(context, email: emailController.value.text, password: passwordController.value.text);
                         }
                       },
                     ),

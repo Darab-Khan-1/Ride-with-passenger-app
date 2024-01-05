@@ -4,11 +4,16 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ride_with_passenger/view/auth/login_screen.dart';
+import 'package:ride_with_passenger/view/home_screen/home_screen.dart';
+import 'package:ride_with_passenger/view/splash_screen/splash_screen.dart';
 
 import '../../Services/user_preferences/user_preferences.dart';
 import '../../constants/app_url/app_url.dart';
 import '../../data/network/network_api_services.dart';
+import '../../model/login_model/login_model.dart';
 import '../../utils/utils.dart';
+import '../../view/bottom_nav_bar/bottom_nav_bar_view.dart';
 
 
 class AuthController extends GetxController{
@@ -28,20 +33,23 @@ final _apiService = NetworkApiServices();
         "email": email,
         "password": password,
       };
-      final response = _apiService.postApi(data, AppUrl.loginApi);
-      // if(response['status_code'] == 200){
-      //   Get.back();
-      //   // userPreference.saveUser(response['data']);
-      //   // Get.offAll(BottomNavigationBarScreen());
-      // }
-      // else if(response['status_code'] == 401){
-      //   Get.back();
-      //   Utils.snackBar('Error', response['error']);
-      // }
-      // else{
-      //   Get.back();
-      //   Utils.snackBar('Error', response['error']);
-      // }
+      dynamic response = await _apiService.postApi(data, AppUrl.loginApi);
+
+      if(response['status_code'] == 200){
+        LoginModel userModel = LoginModel.fromJson(response);
+        Get.back();
+        userPreference.saveUser(userModel);
+        Get.offAll(BottomNavBarScreen());
+      }
+      else if(response['status_code'] == 401){
+        Get.back();
+        userPreference.removeUser().then((value) => Get.offAll(LoginScreen()));
+        Utils.snackBar('Error', response['error']);
+      }
+      else{
+        Get.back();
+        Utils.snackBar('Error', response['error']);
+      }
     } on SocketException catch (e) {
       Get.back();
       errorOverlay(context,
@@ -56,40 +64,75 @@ final _apiService = NetworkApiServices();
       log(e.toString());
     }
   }
-  Future<void> changePassword(BuildContext context, {required String oldPassword, required String newPassword}) async {
+  Future<dynamic> changePassword(BuildContext context, {required String oldPassword, required String newPassword}) async {
     try {
       loadingStatusDialog(context, title: 'updating password');
       Map<String, dynamic> data = {
-        "password": newPassword,
+        "old_password": oldPassword,
+        "new_password": newPassword,
       };
-      // final response = _apiService.updateApi(data, AppUrl.changePasswordApi);
-      // if(response['status_code'] == 200){
-      //   Get.back();
-      //   Utils.snackBar('Password', response['message']);
-      //   // newPasswordController.value.clear();
-      //   // oldPasswordController.value.clear();
-      //   // logout(context);
-      // }
-      // else if (response['status_code'] == 401){
-      //   Get.back();
-      //   Utils.snackBar('Error', response['error']);
-      // }
-      // else{
-      //   Get.back();
-      //   Utils.snackBar('Error', response['error']);
-      // }
+      dynamic response = await _apiService.updateApi(data, AppUrl.changePasswordApi);
+      if(response['status_code'] == 200){
+        Get.back();
+        Utils.snackBar('Password', response['message']);
+        // newPasswordController.value.clear();
+        // oldPasswordController.value.clear();
+        // logout(context);
+      }
+      else if (response['status_code'] == 401){
+        Get.back();
+        Utils.snackBar('Error', response['error']);
+        userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+      }
+      else{
+        Get.back();
+        Utils.snackBar('Error', response['error']);
+      }
     } on SocketException catch (e) {
       Get.back();
       errorOverlay(context,
-          title: 'Updation Failed',
+          title: 'Error!',
           message: e.message,
           okLabel: 'ok');
     }
     catch (e) {
+      Get.back();
       errorOverlay(context,
-          title: 'Updation Failed', message: e.toString(), okLabel: 'ok');
+          title: 'Error!', message: "Something Went Wrong", okLabel: 'ok');
       log(e.toString());
     }
   }
+
+logoutApi(BuildContext context) async {
+
+  try {
+    loadingStatusDialog(context, title: 'Logging Out');
+    dynamic response = await _apiService.getApi(AppUrl.logoutApi);
+    if(response['status_code'] == 200){
+      userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+    }
+    else if(response['status_code'] == 401){
+      Get.back();
+      userPreference.removeUser().then((value) => Get.offAll(LoginScreen()));
+      Utils.snackBar('Error', response['error']);
+    }
+    else{
+      Get.back();
+      Utils.snackBar('Error', response['error']);
+    }
+  } on SocketException catch (e) {
+    Get.back();
+    errorOverlay(context,
+        title: 'Error!',
+        message: e.message,
+        okLabel: 'ok');
+  }
+  catch (e) {
+    Get.back();
+    errorOverlay(context,
+        title: 'Error!', message: "Something went Wrong", okLabel: 'ok');
+    log(e.toString());
+  }
+}
 
 }

@@ -5,7 +5,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../Widgets/cards/all_job_card/all_job_card.dart';
 import '../../constants/colors.dart';
-import '../../controller/trip_controller/trip_controller.dart';
+import '../../controller/all_job_controller/all_job_controller.dart';
 
 class TripsScreen extends StatefulWidget {
   TripsScreen({super.key});

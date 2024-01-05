@@ -12,7 +12,7 @@ class LoginModel {
     message = json['message'];
     error = json['error'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    isLogin = json['isLogin'];
+    isLogin = json['status_code'] == 200 ? true : false;
   }
 
   Map<String, dynamic> toJson() {

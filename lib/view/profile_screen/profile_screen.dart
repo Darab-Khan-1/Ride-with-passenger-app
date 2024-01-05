@@ -136,12 +136,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       ),
                       SizedBox(height: 10,),
+                      TextInputFieldWidget(
+                        controller: controller.licenseController.value,
+                        textInputType: TextInputType.text,
+                        lable: 'License',
+                        prefixIcon: Icon(Icons.drive_file_rename_outline),
+                        onChange: (value){
+                          controller.checkValidity();
+                        },
+                      ),
+                      SizedBox(height: 10,),
                       KElevatedButton(
                         title: 'Update',
                         isEnable: controller.isValid,
                         onPressed: (){
                           if(_formkey.currentState!.validate()){
-                            // controller.updateProfile(context);
+                            controller.updateProfile(context);
                           }
                         },
                       )
@@ -167,46 +177,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> imagePickerFunction () async{
-    final ctrl = Get.find<ProfileController>();
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-      Permission.camera,
-    ].request();
+   try{
+     final ctrl = Get.find<ProfileController>();
+     Map<Permission, PermissionStatus> statuses = await [
+       Permission.camera,
+     ].request();
 
-    if (statuses[Permission.camera]!.isGranted) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        scaffoldKey.currentState!.showBottomSheet(
-              (context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: 210,
-              child:  CustomImagePicker(
-                onImagePicked: (value) {
-                  if(value!=null){
-                    profileImage.value = value.path;
-                    ctrl.avatar.value = value.path;
-                  }
-                  ctrl.checkValidity();
-                  Navigator.pop(context, value); // Return the picked image to the caller
-                },
-              ),
-            );
-          },
-        );
-      });
-    } else {
-      print('No permission provided');
-      if (statuses[Permission.storage]!.isDenied ||
-          statuses[Permission.storage]!.isPermanentlyDenied) {
-        // Handle storage permission denied or permanently denied
-        print('Storage permission denied');
-      }
-      if (statuses[Permission.camera]!.isDenied ||
-          statuses[Permission.camera]!.isPermanentlyDenied) {
-        // Handle camera permission denied or permanently denied
-        print('Camera permission denied');
-      }
-    }
+     if (statuses[Permission.camera]!.isGranted) {
+       SchedulerBinding.instance.addPostFrameCallback((_) {
+         scaffoldKey.currentState!.showBottomSheet(
+               (context) {
+             return Container(
+               width: MediaQuery.of(context).size.width,
+               height: 210,
+               child:  CustomImagePicker(
+                 onImagePicked: (value) {
+                   if(value!=null){
+                     profileImage.value = value.path;
+                     ctrl.avatar.value = value.path;
+                   }
+                   ctrl.checkValidity();
+                   Navigator.pop(context, value); // Return the picked image to the caller
+                 },
+               ),
+             );
+           },
+         );
+       });
+     } else {
+       if (statuses[Permission.camera]!.isDenied ||
+           statuses[Permission.camera]!.isPermanentlyDenied) {
+         // Handle camera permission denied or permanently denied
+         print('Camera permission denied');
+       }
+     }
+   }catch (e){
+     print(e.toString());
+   }
 
   }
 }

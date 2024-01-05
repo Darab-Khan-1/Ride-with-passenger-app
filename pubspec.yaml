@@ -37,7 +37,7 @@ dependencies:
   gap: ^3.0.1
   google_maps_flutter:
   #Get Permission
-  geolocator:
+  location:
   google_sign_in: ^6.2.1
   firebase_core: ^2.24.2
   http: ^1.1.2
