@@ -12,6 +12,8 @@ class AppUrl {
   static const String startTripApi = '$baseUrl/api/start/trip';
   static const String endTripApi = '$baseUrl/api/end/trip';
   static const String stopTripApi = '$baseUrl/api/stop/trip';
+  static const String pickupTripApi = '$baseUrl/api/pickup/trip';
+  static const String exitStopApi = '$baseUrl/api/exit/stop';
   static const String getAllTripApi = '$baseUrl/api/all/trips';
   static const String completedTrips= '$baseUrl/api/completed/trips';
 }

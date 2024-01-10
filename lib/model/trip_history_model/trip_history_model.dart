@@ -116,7 +116,8 @@ class TripHistoryStops {
   String? location;
   String? lat;
   String? long;
-  DateTime? datetime;
+  String? datetime;
+  String? exitTime;
   String? createdAt;
   String? updatedAt;
 
@@ -127,6 +128,7 @@ class TripHistoryStops {
         this.lat,
         this.long,
         this.datetime,
+        this.exitTime,
         this.createdAt,
         this.updatedAt});
 
@@ -137,6 +139,7 @@ class TripHistoryStops {
     lat = json['lat'];
     long = json['long'];
     datetime = json['datetime'];
+    exitTime = json['exit_time'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

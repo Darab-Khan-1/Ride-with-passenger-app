@@ -51,7 +51,7 @@ class _TripsScreenState extends State<TripsScreen> {
             controller.getAlltrips();
             controller.refreshHomeController.refreshCompleted();
           },
-          child: controller.allTrips.value.data!.isEmpty
+          child: controller.allTrips.value.data!.length == 0
               ? Center(
             child: Text("No Trips"),
           )

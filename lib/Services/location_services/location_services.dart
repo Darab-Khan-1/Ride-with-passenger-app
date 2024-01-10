@@ -1,10 +1,12 @@
 
+import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
 import '../../constants/app_url/app_url.dart';
 
-class LocationServices {
+class LocationService {
   static Future PermissionRequest() async {
     try {
       PermissionStatus permissionStatus =
@@ -63,9 +65,11 @@ class LocationServices {
     });
 
     await http.get(uri).then((value) {
-      print(value.statusCode);
-     print("location updating");
-     return value.statusCode;
+      if(value.statusCode == 200) {
+        log(value.statusCode.toString());
+        log("location updating");
+      }
+      return value.statusCode;
     });
   }
 

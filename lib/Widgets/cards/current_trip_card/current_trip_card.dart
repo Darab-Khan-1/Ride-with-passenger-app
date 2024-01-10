@@ -4,16 +4,20 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/expandable_text.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/k_text.dart';
+import 'package:ride_with_passenger/constants/enums.dart';
+import 'package:ride_with_passenger/controller/all_job_controller/all_job_controller.dart';
+import 'package:ride_with_passenger/controller/auth_controller/auth_controller.dart';
+import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
 import 'package:ride_with_passenger/model/on_going_trip_model/ongoing_trip_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../../constants/colors.dart';
 
 class CurrentTripCard extends StatelessWidget {
-OnGoingTripData model = OnGoingTripData();
-   CurrentTripCard(
-      {Key? key, required this.model})
-      : super(key: key);
+  OnGoingTripData model = OnGoingTripData();
 
+  CurrentTripCard({Key? key, required this.model})
+      : super(key: key);
+final _homeController = Get.put(HomeScreenController());
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -48,16 +52,19 @@ OnGoingTripData model = OnGoingTripData();
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ExpandableText(text: "Trip Id: ${model.id}", style: TextStyle(color: kBlackColor, fontSize: 18, fontWeight: FontWeight.bold),),
-                      //  Text(
-                      //   _statusHeading(model.status!),
-                      //   style: TextStyle(
-                      //     fontStyle: FontStyle.normal,
-                      //     fontWeight: FontWeight.w700,
-                      //     color: kBlackColor,
-                      //     fontSize: 20,
-                      //   ),
-                      // ),
+                      ExpandableText(text: "${model.uniqueId}",
+                        style: TextStyle(color: kBlackColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),),
+                      Text(
+                        _statusHeading(model.status!, model.nextStop!.type!),
+                        style: TextStyle(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w700,
+                          color: kBlackColor,
+                          fontSize: 20,
+                        ),
+                      ),
                       const Text(
                         'Ride with Passenger',
                         style: TextStyle(
@@ -69,7 +76,7 @@ OnGoingTripData model = OnGoingTripData();
                       ),
                     ],
                   ),
-                  OutlinedButton(onPressed: (){}, child: KText(text: "Stop", color: kMainColor, fontSize: 18)),
+                  tripButton()
                 ],
               ),
               const Divider(
@@ -176,16 +183,84 @@ OnGoingTripData model = OnGoingTripData();
       ),
     );
   }
-  String _statusHeading(String status) {
-    switch (status) {
-      case 'started':
-        return 'In Transit to Pick-Up';
-      case 'in-transit':
-        return 'In Transit to Delivery';
-      case 'completed':
+
+  _statusHeading(String loadstatus, String type) {
+    try{
+      if (loadstatus == 'started') {
+        return 'Way to Pick-Up';
+      }
+      else if (loadstatus == 'pickup') {
+        return 'Arrived at Pick-Up';
+      }
+      else if (loadstatus == 'in-transit') {
+        if(type == "stop"){
+          return "Way to Next Stop";}
+        else if(type == "destination"){
+          return "Way to Destination";
+        }
+      }else if (loadstatus == 'stopped') {
+        return 'Arrived at Stop';
+      }
+      else if (loadstatus == 'destination'){
         return 'Arrived at Delivery';
-      default:
-        return 'Unknown';
+      }
+    }catch (e) {
+      print(e);
     }
+  }
+
+  Widget tripButton() {
+    try {
+      if (model.status == 'started') {
+        return OutlinedButton(onPressed: () async {
+          _homeController.setRxRequestStatus(Status.LOADING);
+         await HomeScreenController().pickupTrip(model.id!);
+         await _homeController.tripsCircleApi();
+          _homeController.setRxRequestStatus(Status.COMPLETED);
+        },
+            child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
+      }
+      else if (model.status == 'pickup') {
+        return OutlinedButton(onPressed: () {
+
+        },
+            child: KText(text: "Start", color: kMainColor, fontSize: 18));
+      }
+      else if (model.status == 'stopped') {
+        return OutlinedButton(onPressed: () async {
+          _homeController.setRxRequestStatus(Status.LOADING);
+         await HomeScreenController().exitStop(model.id!, model.currentStop);
+          await _homeController.tripsCircleApi();
+          _homeController.setRxRequestStatus(Status.COMPLETED);
+        },
+            child: KText(text: "Exit", color: kMainColor, fontSize: 18));
+      }
+      else if (model.status == 'in-transit') {
+        if(model.nextStop!.type == "stop"){
+          return OutlinedButton(onPressed: () async {
+            _homeController.setRxRequestStatus(Status.LOADING);
+            await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
+            await _homeController.tripsCircleApi();
+            _homeController.setRxRequestStatus(Status.COMPLETED);
+          },
+              child: KText(text: "Stop", color: kMainColor, fontSize: 18));
+        }
+        else if(model.nextStop!.type == "destination"){
+          return OutlinedButton(onPressed: () async {
+            _homeController.setRxRequestStatus(Status.LOADING);
+          await HomeScreenController().endTrip(model.id!);
+            await _homeController.tripsCircleApi();
+            _homeController.setRxRequestStatus(Status.COMPLETED);
+          },
+              child: KText(text: "End Trip", color: kMainColor, fontSize: 18));
+        }
+      } else {
+        return Container();
+      }
+    }
+    catch(e){
+      print(e);
+    }
+    return Container();
   }
 }

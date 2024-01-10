@@ -32,16 +32,18 @@ class LoginModel {
 
 class Data {
   String? bearerToken;
-
-  Data({this.bearerToken,});
+  String? uniqueId;
+  Data({this.bearerToken, this.uniqueId});
 
   Data.fromJson(Map<String, dynamic> json) {
     bearerToken = json['bearer_token'];
+    uniqueId = json['unique_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['bearer_token'] = bearerToken;
+    data['unique_id'] = uniqueId;
     return data;
   }
 }

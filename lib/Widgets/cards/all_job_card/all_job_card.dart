@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
 import '../../../constants/colors.dart';
+import '../../../controller/all_job_controller/all_job_controller.dart';
 import '../../../controller/card_controller/card_controller.dart';
 import '../../../model/all_trip_model/all_trip_model.dart';
 import '../../dialog/custom_alert_dialog.dart';
@@ -162,7 +163,7 @@ class AllJobCards extends StatelessWidget {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        TripController().startTrip(tripId!);
+                                        HomeScreenController().startTrip(tripId!);
                                         },
                                         child: Container(
                                           width: 80,

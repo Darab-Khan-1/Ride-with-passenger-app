@@ -10,7 +10,7 @@ class OnGoingTripModel {
     statusCode = json['status_code'];
     message = json['message'];
     error = json['error'];
-    data = json['data'] != null ? new OnGoingTripData.fromJson(json['data']) : null;
+    data = json['data'] != "" ? new OnGoingTripData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +40,8 @@ class OnGoingTripData {
   String? long;
   String? dropLat;
   String? dropLong;
+  String? status;
+  int? currentStop;
   List<OnGoingTripStops>? stops;
   OnGoingTripNextStop? nextStop;
 
@@ -58,6 +60,8 @@ class OnGoingTripData {
         this.long,
         this.dropLat,
         this.dropLong,
+        this.status,
+        this.currentStop,
         this.stops,
         this.nextStop});
 
@@ -76,6 +80,8 @@ class OnGoingTripData {
     long = json['long'];
     dropLat = json['drop_lat'];
     dropLong = json['drop_long'];
+    status = json['status'];
+    currentStop = json['current_stop'];
     if (json['stops'] != null) {
       stops = <OnGoingTripStops>[];
       json['stops'].forEach((v) {

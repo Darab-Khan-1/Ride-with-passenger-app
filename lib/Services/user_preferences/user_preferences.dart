@@ -10,11 +10,15 @@ class UserPreference {
     SharedPreferences sp = await SharedPreferences.getInstance();
 
     sp.setString('token', responseModel.data!.bearerToken ?? '');
+    sp.setString('unique_id', responseModel.data!.uniqueId!);
     sp.setBool('isLogin', responseModel.isLogin ?? false);
     print('User saved.');
     return true;
   }
-
+ get uid async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    return sp.getString('unique_id');
+  }
 
   Future<LoginModel> getUser() async {
     print('Getting user...');

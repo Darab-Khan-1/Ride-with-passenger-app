@@ -30,7 +30,7 @@ class Utils{
     Get.snackbar(
         title,
         message ,
-        backgroundColor: kWhiteColor.withOpacity(0.7)
+        backgroundColor: kWhiteColor.withOpacity(0.3)
     );
   }
 }

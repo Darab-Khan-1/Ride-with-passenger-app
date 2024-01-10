@@ -57,6 +57,14 @@ class AppTheme {
         ),
         iconTheme: const IconThemeData(color: kWhiteColor),
       ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: kWhiteColor,
+        contentTextStyle: const TextStyle(
+          color: kBlackColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }

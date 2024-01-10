@@ -30,7 +30,14 @@ class HistoryScreen extends StatelessWidget {
                   if (controller.error.value == 'No internet') {
                     return KText(text: 'No Internet', color: Colors.red);
                   } else {
-                    return KText(text: 'Something went wrong', color: Colors.red);
+                    return Center(
+                      child: Column(children: [
+                        KText(text: "Something went wrong"),
+                        ElevatedButton(onPressed: (){
+                          controller.completedTrips();
+                        }, child: KText(text: "Retry",))
+                      ],),
+                    );;
                   }
                 case Status.COMPLETED:
                   if(controller.historyList.value.data!.isEmpty){

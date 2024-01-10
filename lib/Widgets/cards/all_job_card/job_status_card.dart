@@ -27,3 +27,22 @@ StatelessWidget loadStatus(
         )),
   );
 }
+
+// Widget tripButton() {
+//   if (model.status == 'started') {
+//     return OutlinedButton(onPressed: () {
+//
+//     },
+//         child: KText(text: "Ready", color: kMainColor, fontSize: 18));
+//   }
+//   else if (model.status == 'pickup') {
+//     return OutlinedButton(onPressed: () {},
+//         child: KText(text: "Start", color: kMainColor, fontSize: 18));
+//   }
+//   else if (model.status == 'in-transit') {
+//     return OutlinedButton(onPressed: () {},
+//         child: KText(text: "Stop", color: kMainColor, fontSize: 18));
+//   } else {
+//     return Container();
+//   }
+// }

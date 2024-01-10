@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:ride_with_passenger/Widgets/dialog/custom_alert_dialog.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/k_text.dart';
 import 'package:ride_with_passenger/constants/colors.dart';
@@ -249,7 +250,7 @@ class HistoryJobCards extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context){
                           return CustomAlertDialog(
-                            title: "Trip Stops",
+                            title: "Stops Details",
                             content: Container(
                               width: size.width,
                               height: size.height * 0.3,
@@ -262,10 +263,27 @@ class HistoryJobCards extends StatelessWidget {
                                           var stop = stops[index];
                                           return ListTile(
                                             leading: CircleAvatar(
+                                              radius: 15,
                                               backgroundColor: kMainColor.withOpacity(0.3),
                                               child: Text("${index+1}"),
                                             ),
                                             title: Text(stop.location!),
+                                            subtitle: Row(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text("Enter: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
+                                                    Text("${ DateFormat("HH mm").format(DateTime.parse(stop.datetime!))}"),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(" - Exit: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
+                                                    Text("${ DateFormat("HH mm").format(DateTime.parse(stop.exitTime!))}"),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                             focusColor: kMainColor,
                                             // Customize the design of each list item here
                                             // For example, you can add icons, different text styles, etc.
