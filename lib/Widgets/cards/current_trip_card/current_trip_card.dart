@@ -204,6 +204,9 @@ final _homeController = Get.put(HomeScreenController());
       else if (loadstatus == 'destination'){
         return 'Arrived at Delivery';
       }
+      else {
+        return 'Way to Pick-Up';
+      }
     }catch (e) {
       print(e);
     }
@@ -243,18 +246,28 @@ final _homeController = Get.put(HomeScreenController());
             await _homeController.tripsCircleApi();
             _homeController.setRxRequestStatus(Status.COMPLETED);
           },
-              child: KText(text: "Stop", color: kMainColor, fontSize: 18));
+              child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
         }
         else if(model.nextStop!.type == "destination"){
           return OutlinedButton(onPressed: () async {
             _homeController.setRxRequestStatus(Status.LOADING);
-          await HomeScreenController().endTrip(model.id!);
+          await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
             await _homeController.tripsCircleApi();
             _homeController.setRxRequestStatus(Status.COMPLETED);
           },
-              child: KText(text: "End Trip", color: kMainColor, fontSize: 18));
+              child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
         }
-      } else {
+      }
+      else if ( model.status == "destination" && model.nextStop!.type == "destination"){
+        return OutlinedButton(onPressed: () async {
+          _homeController.setRxRequestStatus(Status.LOADING);
+          await HomeScreenController().endTrip(model.id!);
+          await _homeController.tripsCircleApi();
+          _homeController.setRxRequestStatus(Status.COMPLETED);
+        },
+            child: KText(text: "End Trip", color: kMainColor, fontSize: 18));
+      }
+      else {
         return Container();
       }
     }

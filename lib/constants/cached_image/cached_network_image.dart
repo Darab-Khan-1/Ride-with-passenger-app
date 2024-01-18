@@ -14,6 +14,7 @@ class cachedImage extends StatelessWidget {
       imageUrl: imageURL!,
       height: 80,
       width: 80,
+      fit: BoxFit.fill,
       imageBuilder: (context, imageProvider) => Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,

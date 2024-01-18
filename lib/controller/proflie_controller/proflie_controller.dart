@@ -76,22 +76,18 @@ RxBool isloading = false.obs;
      Map<String, dynamic> data  = {
        "name": nameController.value.text,
        "email": emailController.value.text,
-       "phone_number": phoneController.value.text,
+       "phone": phoneController.value.text,
         "license_no": licenseController.value.text,
        if(avatar.value != "" && !avatar.value.startsWith('http'))
-         "image": await imageConverterTo64(avatar.value)
+         "avatar": await imageConverterTo64(avatar.value)
      };
 
     try {
-      dynamic response = await _apiService.getApi(AppUrl.getProfileApi);
+      dynamic response = await _apiService.postApi(data, AppUrl.updateProfileApi);
       if(response['status_code'] == 200){
-        nameController.value.text = response['data']['name'];
-        emailController.value.text = response['data']['email'];
-        phoneController.value.text = response['data']['phone'];
-        licenseController.value.text = response['data']['license_no'];
-        avatar.value = response['data']['avatar'];
         Get.back();
         Utils.snackBar('Success', response['message']);
+        getProfile();
       }
       else if(response['status_code'] == 401){
         Get.back();

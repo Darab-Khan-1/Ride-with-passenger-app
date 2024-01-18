@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // controller.getProfile();
+    controller.getProfile();
   }
   @override
   Widget build(BuildContext context) {
