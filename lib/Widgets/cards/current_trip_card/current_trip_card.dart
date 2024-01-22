@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:ride_with_passenger/Widgets/dialog/custom_alert_dialog.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/expandable_text.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/k_text.dart';
 import 'package:ride_with_passenger/constants/enums.dart';
@@ -76,7 +77,7 @@ final _homeController = Get.put(HomeScreenController());
                       ),
                     ],
                   ),
-                  tripButton()
+                  tripButton(context)
                 ],
               ),
               const Divider(
@@ -166,17 +167,12 @@ final _homeController = Get.put(HomeScreenController());
               const SizedBox(
                 height: 10,
               ),
-              // Text(
-              //   model.status == 'in-transit'? model.deliveryDate!: model.pickupDate!,
-              //   textAlign: TextAlign.start,
-              //   style: const TextStyle(
-              //     fontStyle: FontStyle.normal,
-              //     fontWeight: FontWeight.w400,
-              //     color: kBlackColor,
-              //     fontSize: 15,
-              //   ),
-              //   overflow: TextOverflow.visible,
-              // ),
+              ExpandableText(text: descText(), style: const TextStyle(
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w800,
+                color: kBlackColor,
+                fontSize: 15,
+              ),),
             ],
           ),
         ),
@@ -212,14 +208,28 @@ final _homeController = Get.put(HomeScreenController());
     }
   }
 
-  Widget tripButton() {
+  Widget tripButton(BuildContext context) {
     try {
       if (model.status == 'started') {
         return OutlinedButton(onPressed: () async {
-          _homeController.setRxRequestStatus(Status.LOADING);
-         await HomeScreenController().pickupTrip(model.id!);
-         await _homeController.tripsCircleApi();
-          _homeController.setRxRequestStatus(Status.COMPLETED);
+          showDialog(context: context, builder: (context){
+            return KAlertDialog(
+              title: "Arrived At PickUp",
+              content: "Are you sure you reach the pickup point?",
+              isCancel: true,
+              isOk: true,
+              cancelOnPressed: (){
+                Get.back();
+              },
+              okOnPressed: () async {
+                Get.back();
+                _homeController.setRxRequestStatus(Status.LOADING);
+                await HomeScreenController().pickupTrip(model.id!);
+                await _homeController.tripsCircleApi();
+                _homeController.setRxRequestStatus(Status.COMPLETED);
+              },
+            );
+          });
         },
             child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
       }
@@ -231,39 +241,95 @@ final _homeController = Get.put(HomeScreenController());
       }
       else if (model.status == 'stopped') {
         return OutlinedButton(onPressed: () async {
-          _homeController.setRxRequestStatus(Status.LOADING);
-         await HomeScreenController().exitStop(model.id!, model.currentStop);
-          await _homeController.tripsCircleApi();
-          _homeController.setRxRequestStatus(Status.COMPLETED);
+          showDialog(context: context, builder: (context){
+            return KAlertDialog(
+              title: "Exit Stop",
+              content: "Are you sure to exit this stop?",
+              isCancel: true,
+              isOk: true,
+              cancelOnPressed: (){
+                Get.back();
+              },
+              okOnPressed: () async {
+                Get.back();
+                _homeController.setRxRequestStatus(Status.LOADING);
+                await HomeScreenController().exitStop(model.id!, model.currentStop);
+                await _homeController.tripsCircleApi();
+                _homeController.setRxRequestStatus(Status.COMPLETED);
+              },
+            );
+          });
         },
             child: KText(text: "Exit", color: kMainColor, fontSize: 18));
       }
       else if (model.status == 'in-transit') {
         if(model.nextStop!.type == "stop"){
           return OutlinedButton(onPressed: () async {
-            _homeController.setRxRequestStatus(Status.LOADING);
-            await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
-            await _homeController.tripsCircleApi();
-            _homeController.setRxRequestStatus(Status.COMPLETED);
+            showDialog(context: context, builder: (context){
+              return KAlertDialog(
+                title: "Arrived At Stop",
+                content: "Are you sure you reach at the stop?",
+                isCancel: true,
+                isOk: true,
+                cancelOnPressed: (){
+                  Get.back();
+                },
+                okOnPressed: () async {
+                  Get.back();
+                  _homeController.setRxRequestStatus(Status.LOADING);
+                  await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
+                  await _homeController.tripsCircleApi();
+                  _homeController.setRxRequestStatus(Status.COMPLETED);
+                },
+              );
+            });
           },
               child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
         }
         else if(model.nextStop!.type == "destination"){
           return OutlinedButton(onPressed: () async {
-            _homeController.setRxRequestStatus(Status.LOADING);
-          await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
-            await _homeController.tripsCircleApi();
-            _homeController.setRxRequestStatus(Status.COMPLETED);
+            showDialog(context: context, builder: (context){
+              return KAlertDialog(
+                title: "Arrived At Destination",
+                content: "Are you sure you reach the destination point?",
+                isCancel: true,
+                isOk: true,
+                cancelOnPressed: (){
+                  Get.back();
+                },
+                okOnPressed: () async {
+                  Get.back();
+                  _homeController.setRxRequestStatus(Status.LOADING);
+                  await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
+                  await _homeController.tripsCircleApi();
+                  _homeController.setRxRequestStatus(Status.COMPLETED);
+                },
+              );
+            });
           },
               child: KText(text: "Arrived", color: kMainColor, fontSize: 18));
         }
       }
       else if ( model.status == "destination" && model.nextStop!.type == "destination"){
         return OutlinedButton(onPressed: () async {
-          _homeController.setRxRequestStatus(Status.LOADING);
-          await HomeScreenController().endTrip(model.id!);
-          await _homeController.tripsCircleApi();
-          _homeController.setRxRequestStatus(Status.COMPLETED);
+          showDialog(context: context, builder: (context){
+            return KAlertDialog(
+              title: "End Trip",
+              content: "Are you sure you want to end this trip?",
+              isCancel: true,
+              isOk: true,
+              cancelOnPressed: (){
+                Get.back();
+              },
+              okOnPressed: () async {
+                Get.back();
+                _homeController.setRxRequestStatus(Status.LOADING);
+                await HomeScreenController().endTrip(model.id!);
+                await _homeController.tripsCircleApi();
+                _homeController.setRxRequestStatus(Status.COMPLETED);
+              },
+            );
+          });
         },
             child: KText(text: "End Trip", color: kMainColor, fontSize: 18));
       }
@@ -275,5 +341,33 @@ final _homeController = Get.put(HomeScreenController());
       print(e);
     }
     return Container();
+  }
+
+  descText(){
+    if(model.status == "started"){
+      return model.nextStop!.description;
+    }
+    else if(model.status == "pickup"){
+      return "Arrived at Pick-Up";
+    }
+    else if(model.status == "in-transit"){
+      if(model.nextStop!.type == "stop"){
+        var desc = model.stops!.where((element) => element.id == model.nextStop!.stopId).first.description;
+        return desc;
+      }
+      else if(model.nextStop!.type == "destination"){
+        return model.nextStop!.description;
+      }
+    }
+    else if(model.status == "stopped"){
+      var desc = model.stops!.where((element) => element.id == model.nextStop!.stopId).first.description;
+      return desc;
+    }
+    else if(model.status == "destination" && model.nextStop!.type == "destination"){
+      return model.nextStop!.description;
+    }
+    else{
+      return "Way to Pick-Up";
+    }
   }
 }

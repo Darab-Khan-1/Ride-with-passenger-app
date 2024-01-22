@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   _homeController.updateZoomValue(position.zoom);
                       //
                       // },
-                      minMaxZoomPreference: MinMaxZoomPreference(10, 20),
+                      // minMaxZoomPreference: MinMaxZoomPreference(10, 20),
 
                     )),
                     Positioned(

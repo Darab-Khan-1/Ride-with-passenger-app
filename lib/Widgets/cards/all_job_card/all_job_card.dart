@@ -163,7 +163,28 @@ class AllJobCards extends StatelessWidget {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        HomeScreenController().startTrip(tripId!);
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (BuildContext context){
+                                          return KAlertDialog(
+                                              title: "Start Trip",
+                                              content: "Are you sure you want to start this trip?",
+
+                                              isCancel: true,
+                                              isOk: true,
+                                            okOnPressed: (){
+                                              Navigator.pop(context);
+                                              HomeScreenController().startTrip(tripId!);
+                                            },
+                                            cancelOnPressed: (){
+                                              Navigator.pop(context);
+                                            },
+
+                                          );
+                                        }
+                                        ) ;
+
                                         },
                                         child: Container(
                                           width: 80,
@@ -294,12 +315,12 @@ class AllJobCards extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            allTripStops.isEmpty?Container():
+                            allTripStops.length <= 2 ?Container():
                             Row(
                               children: [
                                 KText(text: "Stops: ", color: kMainColor, fontSize: 16, fontWeight: FontWeight.w500,),
                                 SizedBox(width: 10,),
-                                KText(text: "${allTripStops.length}", color: kBlackColor, fontSize: 14, fontWeight: FontWeight.w500,),
+                                KText(text: "${allTripStops.length - 2}", color: kBlackColor, fontSize: 14, fontWeight: FontWeight.w500,),
                                 Expanded(child: Container()),
                                 OutlinedButton(child: KText(text: 'Details', color: kMainColor,fontSize: 16), onPressed: (){
                                   showDialog(
@@ -317,12 +338,15 @@ class AllJobCards extends StatelessWidget {
                                                       itemCount: allTripStops.length,
                                                       itemBuilder: (context, index){
                                                         var stop = allTripStops[index];
-                                                        return ListTile(
+                                                        return index == 0 || index == allTripStops.length - 1 ? Container() :
+                                                          ListTile(
                                                           leading: CircleAvatar(
                                                             backgroundColor: kMainColor.withOpacity(0.3),
-                                                            child: Text("${index+1}"),
+                                                            child: Text("${index}"),
                                                           ),
                                                           title: Text(stop.location!),
+                                                          subtitle: ExpandableText(text: stop.description!,
+                                                            style: const TextStyle(color: kBlackColor, fontWeight: FontWeight.w500),),
                                                           focusColor: kMainColor,
                                                           // Customize the design of each list item here
                                                           // For example, you can add icons, different text styles, etc.

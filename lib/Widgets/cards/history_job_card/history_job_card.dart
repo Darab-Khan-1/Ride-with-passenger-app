@@ -238,12 +238,12 @@ class HistoryJobCards extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10,),
-              stops.isEmpty ? Container() :
+              stops.length <=2 ? Container() :
               Row(
                 children: [
                   KText(text: "Stops: ", color: kMainColor, fontSize: 16, fontWeight: FontWeight.w500,),
                   SizedBox(width: 10,),
-                  KText(text: "${stops.length}", color: kBlackColor, fontSize: 14, fontWeight: FontWeight.w500,),
+                  KText(text: "${stops.length -2}", color: kBlackColor, fontSize: 14, fontWeight: FontWeight.w500,),
                   Expanded(child: Container()),
                   OutlinedButton(child: KText(text: 'Details', color: kMainColor,fontSize: 16), onPressed: (){
                     showDialog(
@@ -261,27 +261,35 @@ class HistoryJobCards extends StatelessWidget {
                                         itemCount: stops.length,
                                         itemBuilder: (context, index){
                                           var stop = stops[index];
-                                          return ListTile(
+                                          return index == 0 || index == stops.length -1 ? Container() :
+                                            ListTile(
                                             leading: CircleAvatar(
                                               radius: 15,
                                               backgroundColor: kMainColor.withOpacity(0.3),
-                                              child: Text("${index+1}"),
+                                              child: Text("${index}"),
                                             ),
                                             title: Text(stop.location!),
-                                            subtitle: Row(
+                                            subtitle: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Row(
                                                   children: [
-                                                    Text("Enter: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
-                                                    Text("${ DateFormat("HH mm").format(DateTime.parse(stop.datetime!))}"),
+                                                    Row(
+                                                      children: [
+                                                        Text("Enter: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
+                                                        Text("${ DateFormat("HH:mm").format(DateTime.parse(stop.datetime!))}"),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(" - Exit: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
+                                                        Text("${ DateFormat("HH:mm").format(DateTime.parse(stop.exitTime!))}"),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Text(" - Exit: ", style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold),),
-                                                    Text("${ DateFormat("HH mm").format(DateTime.parse(stop.exitTime!))}"),
-                                                  ],
-                                                ),
+                                                ExpandableText(text: stop.description!,
+                                                  style: const TextStyle(color: kBlackColor, fontWeight: FontWeight.w500),),
                                               ],
                                             ),
                                             focusColor: kMainColor,

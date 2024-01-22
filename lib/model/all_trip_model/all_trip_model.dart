@@ -119,6 +119,9 @@ class AllTripStops {
   String? datetime;
   String? createdAt;
   String? updatedAt;
+  String? type;
+  String? exitTime;
+  String? description;
 
   AllTripStops(
       {this.id,
@@ -128,7 +131,10 @@ class AllTripStops {
         this.long,
         this.datetime,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.type,
+        this.exitTime,
+        this.description});
 
   AllTripStops.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -139,6 +145,9 @@ class AllTripStops {
     datetime = json['datetime'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    type = json['type'];
+    exitTime = json['exit_time'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -151,6 +160,9 @@ class AllTripStops {
     data['datetime'] = this.datetime;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['type'] = this.type;
+    data['exit_time'] = this.exitTime;
+    data['description'] = this.description;
     return data;
   }
 }

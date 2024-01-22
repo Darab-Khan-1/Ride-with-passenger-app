@@ -128,6 +128,9 @@ class OnGoingTripStops {
   String? datetime;
   String? createdAt;
   String? updatedAt;
+  String? type;
+  String? exitTime;
+  String? description;
 
   OnGoingTripStops(
       {this.id,
@@ -137,7 +140,10 @@ class OnGoingTripStops {
         this.long,
         this.datetime,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.type,
+        this.exitTime,
+        this.description});
 
   OnGoingTripStops.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -148,6 +154,9 @@ class OnGoingTripStops {
     datetime = json['datetime'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    type = json['type'];
+    exitTime = json['exit_time'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -160,6 +169,9 @@ class OnGoingTripStops {
     data['datetime'] = this.datetime;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['type'] = this.type;
+    data['exit_time'] = this.exitTime;
+    data['description'] = this.description;
     return data;
   }
 }
@@ -171,9 +183,10 @@ class OnGoingTripNextStop {
   String? lat;
   String? long;
   String? address;
+  String? description;
 
   OnGoingTripNextStop(
-      {this.stop, this.stopId, this.type, this.lat, this.long, this.address});
+      {this.stop, this.stopId, this.type, this.lat, this.long, this.address, this.description});
 
   OnGoingTripNextStop.fromJson(Map<String, dynamic> json) {
     stop = json['stop'];
@@ -182,6 +195,7 @@ class OnGoingTripNextStop {
     lat = json['lat'];
     long = json['long'];
     address = json['address'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -192,6 +206,7 @@ class OnGoingTripNextStop {
     data['lat'] = this.lat;
     data['long'] = this.long;
     data['address'] = this.address;
+    data['description'] = this.description;
     return data;
   }
 }

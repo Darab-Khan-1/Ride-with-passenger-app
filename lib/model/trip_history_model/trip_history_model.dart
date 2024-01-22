@@ -117,9 +117,11 @@ class TripHistoryStops {
   String? lat;
   String? long;
   String? datetime;
-  String? exitTime;
   String? createdAt;
   String? updatedAt;
+  String? type;
+  String? exitTime;
+  String? description;
 
   TripHistoryStops(
       {this.id,
@@ -128,9 +130,11 @@ class TripHistoryStops {
         this.lat,
         this.long,
         this.datetime,
-        this.exitTime,
         this.createdAt,
-        this.updatedAt});
+        this.updatedAt,
+        this.type,
+        this.exitTime,
+        this.description});
 
   TripHistoryStops.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -139,9 +143,11 @@ class TripHistoryStops {
     lat = json['lat'];
     long = json['long'];
     datetime = json['datetime'];
-    exitTime = json['exit_time'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    type = json['type'];
+    exitTime = json['exit_time'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -154,6 +160,9 @@ class TripHistoryStops {
     data['datetime'] = this.datetime;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['type'] = this.type;
+    data['exit_time'] = this.exitTime;
+    data['description'] = this.description;
     return data;
   }
 }
