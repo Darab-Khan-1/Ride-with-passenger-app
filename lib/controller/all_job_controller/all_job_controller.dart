@@ -52,20 +52,22 @@ class HomeScreenController extends GetxController {
 
   Future<void> getCurrentLocation() async {
     try {
-      await Location. instance.onLocationChanged.listen((locationData) async {
-        currentPosition.value = locationData;
-        print('CURRENT POS: ${currentPosition.value}');
-        await LocationService.updateLocation(locationData, uid! );
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(locationData.latitude!, locationData.longitude!),
-              zoom: zoomValue.value,
-            ),
-          ),
-        );
-        update();
-      });
+     LocationService.PermissionRequest().then((value) async {
+       return await Location.instance.onLocationChanged.listen((locationData) async {
+         currentPosition.value = locationData;
+         print('CURRENT POS: ${currentPosition.value}');
+         await LocationService.updateLocation(locationData, uid! );
+         mapController.animateCamera(
+           CameraUpdate.newCameraPosition(
+             CameraPosition(
+               target: LatLng(locationData.latitude!, locationData.longitude!),
+               zoom: zoomValue.value,
+             ),
+           ),
+         );
+         update();
+       });
+     });
     } catch (e) {
       print("The Error in Getting Current user function ${e.toString()}");
     }

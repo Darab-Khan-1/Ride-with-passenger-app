@@ -16,7 +16,7 @@ class LocationService {
         if (permissionStatus == PermissionStatus.granted) {
           await Location.instance.enableBackgroundMode(enable: true);
           Location.instance.changeSettings(
-              accuracy: LocationAccuracy.high, interval: 7000);
+              accuracy: LocationAccuracy.high, interval: 1000);
           return;
         }
       } while (permissionStatus != PermissionStatus.granted &&

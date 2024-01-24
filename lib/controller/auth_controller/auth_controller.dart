@@ -38,10 +38,10 @@ final _apiService = NetworkApiServices();
 
       if(response['status_code'] == 200){
         LoginModel userModel = LoginModel.fromJson(response);
-        Get.back();
         var fcmToken = Global().fcmToken;
         await userPreference.saveUser(userModel);
         await updateFcmToken(token: fcmToken!);
+        Get.back();
         Get.offAll(BottomNavBarScreen());
       }
       else if(response['status_code'] == 401){
