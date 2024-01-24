@@ -6,10 +6,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_with_passenger/Widgets/dialog/custom_alert_dialog.dart';
 import 'package:ride_with_passenger/constants/colors.dart';
 import 'package:ride_with_passenger/controller/all_job_controller/all_job_controller.dart';
 import 'package:ride_with_passenger/controller/auth_controller/auth_controller.dart';
 import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
+import 'package:ride_with_passenger/view/notification_screen/notification_screen.dart';
 
 import '../../Widgets/cards/current_trip_card/current_trip_card.dart';
 import '../../Widgets/form_fields/k_text.dart';
@@ -42,9 +44,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     icon: Icon(Icons.logout),
                     onPressed: () {
-                      AuthController().logoutApi(context);
+                      showDialog(context: context, builder: (context) {
+                        return KAlertDialog(
+                          title: "Logout",
+                          content: "Are you sure you want to logout?",
+                          isOk: true,
+                          isCancel: true,
+                          okOnPressed: () {
+                            AuthController().logoutApi(context);
+                          },
+                          cancelOnPressed: () {
+                            Get.back();
+                          },
+                        );
+                      });
                     },
-                  )
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.notifications),
+                    onPressed: () {
+                      Get.to(NotificationScreen());
+                    },
+                  ),
                 ],
               ),
               body: Container(

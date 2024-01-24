@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:ride_with_passenger/Services/location_services/location_services.dart';
 import 'package:ride_with_passenger/view/auth/login_screen.dart';
 import 'package:get/get.dart';
 
+import '../../Services/notification_services/notification_services.dart';
 import '../../Services/splash_services.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,6 +24,48 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     requestLocationPermission();
+    FirebaseMessaging.instance.getInitialMessage().then((message) async {
+      if(message != null) {
+        // Utils.snackBar("notification", 'Tapped');
+        // var model = Data.fromJson(json.decode(message.data['load']));
+        // Get.offAll(JobDetailView(model: model));
+      }
+    });
+    FirebaseMessaging.onMessage.listen(
+          (message) {
+        if (message.data.isNotEmpty) {
+          // Show local notification using flutter_local_notifications plugin
+          LocalNotificationService().createAndDisplayNotification(message);
+        }
+      },
+    );
+
+    FirebaseMessaging.onMessageOpenedApp.listen(
+            (RemoteMessage message) async {
+          if (kDebugMode) {
+            log("FirebaseMessaging.onMessageOpenedApp.listen");
+          }
+          try{
+            if(message.data != null) {
+              if (kDebugMode) {
+                log("New Notification");
+              }
+              // Handle the notification data and navigate to the appropriate screen
+              if (message.data['_id'] != null) {
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => DemoScreen(
+                //       id: message.data['_id'],
+                //     ),
+                //   ),
+                // );
+              }
+            }
+          }catch(e){
+            log(e.toString());
+          }
+        }
+    );
   }
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 class AppUrl {
-  static const String baseUrl = 'http://167.86.118.87';
+  static const String baseUrl = 'https://web.rw-passengers.com';
 
   static const String serverUrl = '167.86.118.87:5055';
   static const String googleApiKey = 'AIzaSyCBs57rOv-nggi-hZnH2kLlyGxaHu242Oo';
@@ -16,4 +16,7 @@ class AppUrl {
   static const String exitStopApi = '$baseUrl/api/exit/stop';
   static const String getAllTripApi = '$baseUrl/api/all/trips';
   static const String completedTrips= '$baseUrl/api/completed/trips';
+  static const String updateFcmApi= '$baseUrl/api/save/fcm';
+  static const String getNotification= '$baseUrl/api/all/notifications';
+  static const String seenNotification= '$baseUrl/api/seen/notifications';
 }

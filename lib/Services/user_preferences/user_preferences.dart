@@ -20,6 +20,17 @@ class UserPreference {
     return sp.getString('unique_id');
   }
 
+  Future<bool> saveFcmToken(String fcmToken) async {
+    print('Saving FCM token...');
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString('fcmToken', fcmToken);
+    print('FCM token saved.');
+    return true;
+  }
+  getfcmToken() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    return sp.getString('fcmToken');
+  }
   Future<LoginModel> getUser() async {
     print('Getting user...');
     SharedPreferences sp = await SharedPreferences.getInstance();

@@ -132,7 +132,7 @@ class HomeScreenController extends GetxController {
       }
       else{
         setRxRequestStatus(Status.ERROR);
-        Utils.snackBar('Error', response['error']);
+        Utils.snackBar('Error', response['message']);
       }
     } on SocketException catch (e) {
       setRxRequestStatus(Status.ERROR);
@@ -179,7 +179,7 @@ class HomeScreenController extends GetxController {
       };
       dynamic response = await _apiService.postApi(data, AppUrl.exitStopApi);
       if(response['status_code'] == 200){
-        Utils.snackBar('Success', response['message']);
+        // Utils.snackBar('Success', response['message']);
         // tripsCircleApi();
       }
       else if(response['status_code'] == 401){
@@ -206,7 +206,7 @@ class HomeScreenController extends GetxController {
       };
       dynamic response = await _apiService.postApi(data, AppUrl.stopTripApi);
       if(response['status_code'] == 200){
-        Utils.snackBar('Success', response['message']);
+        // Utils.snackBar('Success', response['message']);
 
       }
       else if(response['status_code'] == 401){
@@ -233,7 +233,7 @@ class HomeScreenController extends GetxController {
       dynamic response = await _apiService.postApi(data, AppUrl.pickupTripApi);
       if(response['status_code'] == 200){
         // isloading.value = false;
-        Utils.snackBar('Success', response['message']);
+        // Utils.snackBar('Success', response['message']);
         // tripsCircleApi();
         // update();
       }

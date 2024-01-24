@@ -226,6 +226,7 @@ final _homeController = Get.put(HomeScreenController());
                 _homeController.setRxRequestStatus(Status.LOADING);
                 await HomeScreenController().pickupTrip(model.id!);
                 await _homeController.tripsCircleApi();
+                Future.delayed(Duration(seconds: 2));
                 _homeController.setRxRequestStatus(Status.COMPLETED);
               },
             );
@@ -255,6 +256,7 @@ final _homeController = Get.put(HomeScreenController());
                 _homeController.setRxRequestStatus(Status.LOADING);
                 await HomeScreenController().exitStop(model.id!, model.currentStop);
                 await _homeController.tripsCircleApi();
+                Future.delayed(Duration(seconds: 2));
                 _homeController.setRxRequestStatus(Status.COMPLETED);
               },
             );
@@ -279,6 +281,7 @@ final _homeController = Get.put(HomeScreenController());
                   _homeController.setRxRequestStatus(Status.LOADING);
                   await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
                   await _homeController.tripsCircleApi();
+                  Future.delayed(Duration(seconds: 2));
                   _homeController.setRxRequestStatus(Status.COMPLETED);
                 },
               );
@@ -302,6 +305,7 @@ final _homeController = Get.put(HomeScreenController());
                   _homeController.setRxRequestStatus(Status.LOADING);
                   await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
                   await _homeController.tripsCircleApi();
+                  Future.delayed(Duration(seconds: 2));
                   _homeController.setRxRequestStatus(Status.COMPLETED);
                 },
               );
@@ -326,6 +330,7 @@ final _homeController = Get.put(HomeScreenController());
                 _homeController.setRxRequestStatus(Status.LOADING);
                 await HomeScreenController().endTrip(model.id!);
                 await _homeController.tripsCircleApi();
+                Future.delayed(Duration(seconds: 2));
                 _homeController.setRxRequestStatus(Status.COMPLETED);
               },
             );

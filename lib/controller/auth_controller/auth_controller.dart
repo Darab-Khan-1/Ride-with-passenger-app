@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ride_with_passenger/constants/global.dart';
 import 'package:ride_with_passenger/view/auth/login_screen.dart';
 import 'package:ride_with_passenger/view/home_screen/home_screen.dart';
 import 'package:ride_with_passenger/view/splash_screen/splash_screen.dart';
@@ -38,7 +39,9 @@ final _apiService = NetworkApiServices();
       if(response['status_code'] == 200){
         LoginModel userModel = LoginModel.fromJson(response);
         Get.back();
-        userPreference.saveUser(userModel);
+        var fcmToken = Global().fcmToken;
+        await userPreference.saveUser(userModel);
+        await updateFcmToken(token: fcmToken!);
         Get.offAll(BottomNavBarScreen());
       }
       else if(response['status_code'] == 401){
@@ -102,7 +105,29 @@ final _apiService = NetworkApiServices();
       log(e.toString());
     }
   }
-
+  Future<dynamic> updateFcmToken({required String token}) async {
+    try {
+      Map<String, dynamic> data = {
+        "fcm": token,
+      };
+      dynamic response = await _apiService.postApi(data, AppUrl.updateFcmApi);
+      if(response['status_code'] == 200){
+        log(response['message']);
+      }
+      else if (response['status_code'] == 401){
+        Utils.snackBar('Error', response['error']);
+        userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+      }
+      else{
+        log(response['error']);
+      }
+    } on SocketException catch (e) {
+      log(e.message);
+    }
+    catch (e) {
+      log(e.toString());
+    }
+  }
 logoutApi(BuildContext context) async {
 
   try {

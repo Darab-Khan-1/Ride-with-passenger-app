@@ -1,15 +1,38 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:ride_with_passenger/constants/string.dart';
 import 'package:ride_with_passenger/view/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Services/notification_services/notification_services.dart';
 import 'constants/theme.dart';
 import 'firebase_options.dart';
+
+Future<void> backgroundHandler(RemoteMessage message) async {
+  // Handle background messages here
+  print("Handling background message: ${message.messageId}");
+   LocalNotificationService().createAndDisplayNotification(message);
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  await LocalNotificationService().initialize();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  if (kDebugMode) {
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
   runApp(const MyApp());
 }
 
