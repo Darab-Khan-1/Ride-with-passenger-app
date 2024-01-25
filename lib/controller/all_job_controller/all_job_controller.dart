@@ -44,6 +44,7 @@ class HomeScreenController extends GetxController {
   List<LatLng> routeCoordinates = [];
   final _apiService = NetworkApiServices();
   final ongoingTrip = OnGoingTripModel().obs;
+  RxDouble speed = 0.0.obs;
   void updateZoomValue(double value){
     zoomValue.value = value;
     update();
@@ -56,6 +57,7 @@ class HomeScreenController extends GetxController {
        return await Location.instance.onLocationChanged.listen((locationData) async {
          currentPosition.value = locationData;
          print('CURRENT POS: ${currentPosition.value}');
+         speed.value = locationData.speed!;
          await LocationService.updateLocation(locationData, uid! );
          mapController.animateCamera(
            CameraUpdate.newCameraPosition(

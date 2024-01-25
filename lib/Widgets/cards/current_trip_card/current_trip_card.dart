@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:ride_with_passenger/Widgets/custom_widgets/custom_widgets.dart';
 import 'package:ride_with_passenger/Widgets/dialog/custom_alert_dialog.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/expandable_text.dart';
 import 'package:ride_with_passenger/Widgets/form_fields/k_text.dart';
@@ -66,20 +67,13 @@ final _homeController = Get.put(HomeScreenController());
                           fontSize: 20,
                         ),
                       ),
-                      const Text(
-                        'Ride with Passenger',
-                        style: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: kBlackColor,
-                          fontSize: 18,
-                        ),
-                      ),
                     ],
                   ),
                   tripButton(context)
                 ],
               ),
+              const Gap(10),
+              _locationText(context),
               const Divider(
                 color: kGreyColor,
                 thickness: 2,
@@ -142,27 +136,23 @@ final _homeController = Get.put(HomeScreenController());
               //   ],
               // ),
               // model.status == 'in-transit'?
-              Text(
+              ExpandableText(text: "Pickup: " +
                 model.pickupLocation!,
-                textAlign: TextAlign.start,
                 style: const TextStyle(
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,
                   color: kBlackColor,
                   fontSize: 15,
                 ),
-                overflow: TextOverflow.visible,
               ),
-              Text(
+              ExpandableText(text: "Dropoff: " +
                 model.deliveryLocation!,
-                textAlign: TextAlign.start,
                 style: const TextStyle(
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,
                   color: kBlackColor,
                   fontSize: 15,
                 ),
-                overflow: TextOverflow.visible,
               ),
               const SizedBox(
                 height: 10,
@@ -347,6 +337,31 @@ final _homeController = Get.put(HomeScreenController());
     }
     return Container();
   }
+  Widget _locationText(BuildContext context) {
+    try {
+      if (model.status == 'started') {
+        return kRowWithAddress(address: model.pickupLocation!, nextLat: double.parse(model.lat!), nextLong: double.parse(model.long!));
+      }
+      else if (model.status == 'stopped') {
+        return kRowWithAddress(address: model.nextStop!.address!, nextLat: double.parse(model.nextStop!.lat!), nextLong: double.parse(model.nextStop!.long!));
+      }
+      else if (model.status == 'in-transit') {
+        if(model.nextStop!.type == "stop"){
+          return kRowWithAddress(address: model.nextStop!.address!, nextLat: double.parse(model.nextStop!.lat!), nextLong: double.parse(model.nextStop!.long!));
+        }
+        else if(model.nextStop!.type == "destination"){
+          return kRowWithAddress(address: model.nextStop!.address!, nextLat: double.parse(model.nextStop!.lat!), nextLong: double.parse(model.nextStop!.long!));
+        }
+      }
+      else {
+        return Container();
+      }
+    }
+    catch(e){
+      print(e);
+    }
+    return Container();
+  }
 
   descText(){
     if(model.status == "started"){
@@ -375,4 +390,5 @@ final _homeController = Get.put(HomeScreenController());
       return "Way to Pick-Up";
     }
   }
+
 }

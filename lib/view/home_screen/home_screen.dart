@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Obx(() => GoogleMap(
                       compassEnabled: true,
-                      myLocationButtonEnabled: true,
+                      myLocationButtonEnabled: false,
                       zoomControlsEnabled: false,
                       myLocationEnabled: true,
                       trafficEnabled: true,
@@ -108,11 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       onMapCreated: (GoogleMapController controller) async {
                         _homeController.mapController = controller;
                       },
-                      // onCameraMove: (CameraPosition position) {
-                      //   // log( "Current position Zoom Value" + position.zoom.toString());
-                      //   _homeController.updateZoomValue(position.zoom);
-                      //
-                      // },
+                      onCameraMove: (CameraPosition position) {
+                        // log( "Current position Zoom Value" + position.zoom.toString());
+                        _homeController.updateZoomValue(position.zoom);
+
+                      },
                       // minMaxZoomPreference: MinMaxZoomPreference(10, 20),
 
                     )),
@@ -163,6 +163,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
 
                       }),
+                    ),
+                    Positioned(
+                      bottom: 40.0,
+                      left: 16.0,
+                      child: Container(
+                          width: 65,
+                          height: 65,
+                          alignment: Alignment.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text( "${controller.speed.value.toStringAsFixed(2)}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),),
+                              Text("Km/hr", style: TextStyle(color: Colors.black, fontSize: 11),)
+                            ],
+                          ),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: kPrimaryColor,
+                                width: 5,
+                              )
+                          )),
                     ),
                   ],
                 ),
