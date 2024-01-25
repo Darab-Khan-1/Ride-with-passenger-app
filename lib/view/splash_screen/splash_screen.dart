@@ -32,9 +32,10 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
     FirebaseMessaging.onMessage.listen(
-          (message) {
+          (message) async {
         if (message.data.isNotEmpty) {
           // Show local notification using flutter_local_notifications plugin
+          LocalNotificationService().playCustomSound(message.data['sound'].split('.').first);
           LocalNotificationService().createAndDisplayNotification(message);
         }
       },

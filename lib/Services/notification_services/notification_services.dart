@@ -155,9 +155,9 @@ class LocalNotificationService {
             "notifications",
             importance: Importance.high,
             priority: Priority.high,
-            playSound: true,
+            playSound: false,
             audioAttributesUsage: AudioAttributesUsage.alarm,
-            sound: RawResourceAndroidNotificationSound(message.data['sound'].split(".").first),
+            // sound: RawResourceAndroidNotificationSound(message.data['sound'].split(".").first),
           ),
           iOS: DarwinNotificationDetails(
             presentSound: true,
@@ -179,6 +179,34 @@ class LocalNotificationService {
       if (kDebugMode) {
         print('Failed to create and display notification: $e');
       }
+    }
+  }
+  AudioPlayer _audioPlayer = AudioPlayer();
+  playCustomSound(String value) async {
+    try {
+      if (value == "anychange") {
+        await _audioPlayer.play(
+            AssetSource("alerts/anychange.mp3"), volume: 100.0, mode: PlayerMode.mediaPlayer);
+      }
+     else if (value == "newtrip") {
+        await _audioPlayer.play(
+            AssetSource("alerts/newtrip.mp3"), volume: 100.0);
+      }
+      else if (value == "notificationfromplatform") {
+        await _audioPlayer.play(
+            AssetSource("alerts/notificationfromplatform.mp3"), volume: 100.0);
+      }
+      else if(value == "remindertrip"){
+        await _audioPlayer.play(
+            AssetSource("alerts/remindertrip.mp3"),
+          volume: 100.0,
+        );
+      }
+      else{
+
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 
