@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -364,30 +366,34 @@ final _homeController = Get.put(HomeScreenController());
   }
 
   descText(){
-    if(model.status == "started"){
-      return model.nextStop!.description;
-    }
-    else if(model.status == "pickup"){
-      return "Arrived at Pick-Up";
-    }
-    else if(model.status == "in-transit"){
-      if(model.nextStop!.type == "stop"){
-        var desc = model.stops!.where((element) => element.id == model.nextStop!.stopId).first.description;
-        return desc;
+    try{
+
+      if(model.status == "started"){
+        return model.nextStop!.description ?? "";
       }
-      else if(model.nextStop!.type == "destination"){
-        return model.nextStop!.description;
+      else if(model.status == "pickup"){
+        return "Arrived at Pick-Up" ?? "";
       }
-    }
-    else if(model.status == "stopped"){
-      var desc = model.stops!.where((element) => element.id == model.nextStop!.stopId).first.description;
-      return desc;
-    }
-    else if(model.status == "destination" && model.nextStop!.type == "destination"){
-      return model.nextStop!.description;
-    }
-    else{
-      return "Way to Pick-Up";
+      else if(model.status == "in-transit"){
+        if(model.nextStop!.type == "stop"){
+          return  model.nextStop!.description ?? "";
+        }
+        else if(model.nextStop!.type == "destination"){
+          return model.nextStop!.description ?? "";
+        }
+      }
+      else if(model.status == "stopped"){
+        var desc = model.stops!.where((element) => element.id == model.currentStop);
+        return desc.first.description ?? "";
+      }
+      else if(model.status == "destination" && model.nextStop!.type == "destination"){
+        return model.nextStop!.description ?? "";
+      }
+      else{
+        return "N/A" ?? "";
+      }
+    }catch (e){
+      log(e.toString());
     }
   }
 
