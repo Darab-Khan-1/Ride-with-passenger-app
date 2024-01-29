@@ -157,20 +157,20 @@ class LocalNotificationService {
             priority: Priority.high,
             playSound: false,
             audioAttributesUsage: AudioAttributesUsage.alarm,
-            // sound: RawResourceAndroidNotificationSound(message.data['sound'].split(".").first),
+            sound: RawResourceAndroidNotificationSound(message.notification!.android!.sound!.split('.').first),
           ),
           iOS: DarwinNotificationDetails(
             presentSound: true,
             interruptionLevel: InterruptionLevel.active,
-            sound: message.data['sound'],
+            sound: message.notification!.android!.sound!.split('.').first,
             presentAlert: true,
           )
       );
 ///todo: for ios need to create resource folder in runner by right click on runner and create new resource folder and add sound file in it
       await _notificationsPlugin.show(
         id,
-        message.data["title"],
-        message.data["body"],
+        message.notification!.title,
+        message.notification!.body,
         notificationDetails,
         payload: message.data['icon'],
       );

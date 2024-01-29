@@ -1,6 +1,8 @@
 
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
@@ -9,6 +11,18 @@ import '../../constants/app_url/app_url.dart';
 class LocationService {
   static Future PermissionRequest() async {
     try {
+      // await showDialog(
+      //     context: Get.context!,
+      //     barrierDismissible: false,
+      //     builder: (context) => AlertDialog(
+      //       title: const Text('Alert!'),
+      //       content: const Text('Please Allow Location All the time for live Tracking'),
+      //       actions: [
+      //         TextButton(onPressed: (){
+      //           Navigator.pop(context);
+      //         }, child: const Text('Ok'))
+      //       ],
+      //     ));
       PermissionStatus permissionStatus =
           await Location.instance.hasPermission();
       do {

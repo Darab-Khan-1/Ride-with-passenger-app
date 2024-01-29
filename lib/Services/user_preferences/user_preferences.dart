@@ -15,7 +15,7 @@ class UserPreference {
     print('User saved.');
     return true;
   }
- get uid async {
+  Future<String?> uid() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getString('unique_id');
   }

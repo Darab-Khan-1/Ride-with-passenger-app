@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:ride_with_passenger/Services/location_services/location_services.dart';
+import 'package:ride_with_passenger/controller/all_job_controller/all_job_controller.dart';
 import 'package:ride_with_passenger/view/auth/login_screen.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +20,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   SplashServices splashScreen = SplashServices();
+  final _controller = Get.put(HomeScreenController());
   @override
   void initState() {
     // TODO: implement initState
@@ -33,38 +35,18 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     FirebaseMessaging.onMessage.listen(
           (message) async {
-        if (message.data.isNotEmpty) {
+        if (message.notification != null) {
           // Show local notification using flutter_local_notifications plugin
-          LocalNotificationService().playCustomSound(message.data['sound'].split('.').first);
+          LocalNotificationService().playCustomSound(message.notification!.android!.sound!.split('.').first);
           LocalNotificationService().createAndDisplayNotification(message);
+          _controller.countNotification();
         }
       },
     );
-
     FirebaseMessaging.onMessageOpenedApp.listen(
             (RemoteMessage message) async {
-          if (kDebugMode) {
-            log("FirebaseMessaging.onMessageOpenedApp.listen");
-          }
-          try{
-            if(message.data != null) {
-              if (kDebugMode) {
-                log("New Notification");
-              }
-              // Handle the notification data and navigate to the appropriate screen
-              if (message.data['_id'] != null) {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (context) => DemoScreen(
-                //       id: message.data['_id'],
-                //     ),
-                //   ),
-                // );
-              }
-            }
-          }catch(e){
-            log(e.toString());
-          }
+              print('A new onMessageOpenedApp event was published!');
+
         }
     );
   }

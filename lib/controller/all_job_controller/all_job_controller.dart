@@ -11,6 +11,7 @@ import 'package:location/location.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ride_with_passenger/Services/location_services/location_services.dart';
 import 'package:ride_with_passenger/Services/user_preferences/user_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/app_url/app_url.dart';
 import '../../constants/enums.dart';
@@ -21,12 +22,13 @@ import '../../view/bottom_nav_bar/bottom_nav_bar_view.dart';
 import '../../view/splash_screen/splash_screen.dart';
 class HomeScreenController extends GetxController {
   RefreshController refreshAllJobController = RefreshController();
-  String? uid;
+  RxString uid = ''.obs;
   @override
   Future<void> onInit() async {
     super.onInit();
-     uid = await userPreference.uid;
-    getCurrentLocation();
+     SharedPreferences.getInstance().then((value) {
+       uid.value = value.getString('unique_id')!;
+     });
   }
   // RxBool isloading = false.obs;
   final rxRequestStatus = Status.LOADING.obs;
@@ -45,20 +47,38 @@ class HomeScreenController extends GetxController {
   final _apiService = NetworkApiServices();
   final ongoingTrip = OnGoingTripModel().obs;
   RxDouble speed = 0.0.obs;
+  RxInt totalNot = 0.obs;
   void updateZoomValue(double value){
     zoomValue.value = value;
     update();
   }
-
+  RxBool isalert = false.obs;
+  alertbox() {
+    return showDialog(
+        context: Get.context!,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Alert!'),
+          content: const Text('Please Allow Location All the time for live Tracking'),
+          actions: [
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+              getCurrentLocation();
+            }, child: const Text('Ok'))
+          ],
+        ));
+  }
 
   Future<void> getCurrentLocation() async {
     try {
      LocationService.PermissionRequest().then((value) async {
-       return await Location.instance.onLocationChanged.listen((locationData) async {
+       await Location.instance.enableBackgroundMode(enable: true);
+       Location.instance.onLocationChanged.listen((locationData) async {
          currentPosition.value = locationData;
          print('CURRENT POS: ${currentPosition.value}');
+         isalert.value = true;
          speed.value = locationData.speed!;
-         await LocationService.updateLocation(locationData, uid! );
+         await LocationService.updateLocation(locationData, uid.value );
          mapController.animateCamera(
            CameraUpdate.newCameraPosition(
              CameraPosition(
@@ -247,6 +267,27 @@ class HomeScreenController extends GetxController {
       }
       else{
         Utils.snackBar('Error', response['error']);
+      }
+    } on SocketException catch (e) {
+      Utils.snackBar('error', e.message);
+    }
+    catch (e) {
+      Utils.snackBar('error', e.toString());
+      log(e.toString());
+    }
+  }
+
+  Future<dynamic> countNotification() async{
+    try {
+      dynamic response = await _apiService.getApi(AppUrl.notificationCountApi);
+      if(response['status_code'] == 200){
+        totalNot.value = response['data'];
+        update();
+      }
+      else if(response['status_code'] == 401){
+        userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+      }
+      else{
       }
     } on SocketException catch (e) {
       Utils.snackBar('error', e.message);

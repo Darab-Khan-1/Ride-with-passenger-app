@@ -19,4 +19,5 @@ class AppUrl {
   static const String updateFcmApi= '$baseUrl/api/save/fcm';
   static const String getNotification= '$baseUrl/api/all/notifications';
   static const String seenNotification= '$baseUrl/api/seen/notifications';
+  static const String notificationCountApi= '$baseUrl/api/count/notifications';
 }

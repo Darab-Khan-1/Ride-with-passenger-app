@@ -30,7 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _homeController.tripsCircleApi();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    if(_homeController.isalert.value == false) {
+      await _homeController.alertbox();
+    }
+    await _homeController.countNotification();
+    await _homeController.tripsCircleApi();
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -60,11 +66,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.notifications),
-                    onPressed: () {
-                      Get.to(NotificationScreen());
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Get.to(() => NotificationScreen())!.then((value) async => await controller.countNotification());
+                      },
+                      child: controller.totalNot.value == 0 ? Icon(Icons.notifications) :
+                      Badge(
+                        label: KText(text: controller.totalNot.value.toString(), color: Colors.white, fontSize: 10,),
+                        child: Icon(Icons.notifications),
+                      ),
+                    ),
                   ),
                 ],
               ),

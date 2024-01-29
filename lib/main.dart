@@ -14,8 +14,8 @@ import 'firebase_options.dart';
 Future<void> backgroundHandler(RemoteMessage message) async {
   // Handle background messages here
   print("Handling background message: ${message.messageId}");
-  LocalNotificationService().playCustomSound(message.data['sound'].split('.').first);
-  LocalNotificationService().createAndDisplayNotification(message);
+  LocalNotificationService().playCustomSound(message.notification!.android!.sound!.split('.').first);
+  // LocalNotificationService().createAndDisplayNotification(message);
 }
 
 Future<void> main() async {

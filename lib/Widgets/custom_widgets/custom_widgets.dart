@@ -16,18 +16,21 @@ class kRowWithAddress extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            KText(text: "Next Stop", color: kBlackColor, fontSize: 16, fontWeight: FontWeight.w500,),
-            ExpandableText(text:
-            address,
-              style: const TextStyle(
-                color: kBlackColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),),
-          ],
+        Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              KText(text: "Next Stop", color: kBlackColor, fontSize: 16, fontWeight: FontWeight.w500,),
+              ExpandableText(text:
+              address,
+                style: const TextStyle(
+                  color: kBlackColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),),
+            ],
+          ),
         ),
 
         InkWell(
