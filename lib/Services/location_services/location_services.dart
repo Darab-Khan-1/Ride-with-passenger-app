@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:ride_with_passenger/Services/user_preferences/user_preferences.dart';
 
 import '../../constants/app_url/app_url.dart';
 
 class LocationService {
+  static UserPreference userPreference = UserPreference();
   static Future PermissionRequest() async {
     try {
       // await showDialog(
@@ -28,6 +30,7 @@ class LocationService {
       do {
         permissionStatus = await Location.instance.requestPermission();
         if (permissionStatus == PermissionStatus.granted) {
+          userPreference.saveLocationAllow(true);
           await Location.instance.enableBackgroundMode(enable: true);
           Location.instance.changeSettings(
               accuracy: LocationAccuracy.high, interval: 1000);

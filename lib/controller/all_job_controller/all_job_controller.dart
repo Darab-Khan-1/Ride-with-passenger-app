@@ -78,7 +78,6 @@ class HomeScreenController extends GetxController {
          print('CURRENT POS: ${currentPosition.value}');
          isalert.value = true;
          speed.value = locationData.speed!;
-         await LocationService.updateLocation(locationData, uid.value );
          mapController.animateCamera(
            CameraUpdate.newCameraPosition(
              CameraPosition(
@@ -87,6 +86,7 @@ class HomeScreenController extends GetxController {
              ),
            ),
          );
+         await LocationService.updateLocation(locationData, uid.value );
          update();
        });
      });

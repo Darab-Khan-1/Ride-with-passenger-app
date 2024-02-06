@@ -27,6 +27,17 @@ class UserPreference {
     print('FCM token saved.');
     return true;
   }
+  Future<bool> saveLocationAllow(bool value) async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool('isLocation', value);
+    return true;
+  }
+  getLocationAllow(){
+    SharedPreferences.getInstance().then((value){
+      return value.getBool("isLocation");
+    });
+  }
+
   getfcmToken() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getString('fcmToken');

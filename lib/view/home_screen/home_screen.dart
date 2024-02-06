@@ -12,6 +12,7 @@ import 'package:ride_with_passenger/controller/all_job_controller/all_job_contro
 import 'package:ride_with_passenger/controller/auth_controller/auth_controller.dart';
 import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
 import 'package:ride_with_passenger/view/notification_screen/notification_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Widgets/cards/current_trip_card/current_trip_card.dart';
 import '../../Widgets/form_fields/k_text.dart';
@@ -31,9 +32,16 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-    if(_homeController.isalert.value == false) {
-      await _homeController.alertbox();
-    }
+      SharedPreferences.getInstance().then((value) async {
+        if(!(value.containsKey("isLocation")) && !(value.containsKey("isLocation"))){
+          if(_homeController.isalert.value == false) {
+            await _homeController.alertbox();
+          }
+        }else{
+          _homeController.getCurrentLocation();
+        }
+
+      } );
     await _homeController.countNotification();
     await _homeController.tripsCircleApi();
     });
