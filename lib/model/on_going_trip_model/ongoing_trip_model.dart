@@ -41,6 +41,7 @@ class OnGoingTripData {
   String? dropLat;
   String? dropLong;
   String? status;
+  String? url;
   int? currentStop;
   List<OnGoingTripStops>? stops;
   OnGoingTripNextStop? nextStop;
@@ -60,6 +61,7 @@ class OnGoingTripData {
         this.long,
         this.dropLat,
         this.dropLong,
+        this.url,
         this.status,
         this.currentStop,
         this.stops,
@@ -82,6 +84,7 @@ class OnGoingTripData {
     dropLong = json['drop_long'];
     status = json['status'];
     currentStop = json['current_stop'];
+    url = json['url'];
     if (json['stops'] != null) {
       stops = <OnGoingTripStops>[];
       json['stops'].forEach((v) {

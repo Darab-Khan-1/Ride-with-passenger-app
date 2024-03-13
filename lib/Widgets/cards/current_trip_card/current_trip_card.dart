@@ -13,6 +13,7 @@ import 'package:ride_with_passenger/controller/all_job_controller/all_job_contro
 import 'package:ride_with_passenger/controller/auth_controller/auth_controller.dart';
 import 'package:ride_with_passenger/controller/trip_controller/trip_controller.dart';
 import 'package:ride_with_passenger/model/on_going_trip_model/ongoing_trip_model.dart';
+import 'package:ride_with_passenger/view/active_trip_screen/active_trip_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../../../constants/colors.dart';
 
@@ -71,7 +72,10 @@ final _homeController = Get.put(HomeScreenController());
                       ),
                     ],
                   ),
-                  tripButton(context)
+                  OutlinedButton(onPressed: () {
+                    Get.to(ActiveTripScreen());
+                  },
+                   child: KText(text: "Details", color: kBlackColor, fontSize: 18)),
                 ],
               ),
               const Gap(10),
@@ -269,9 +273,13 @@ final _homeController = Get.put(HomeScreenController());
                   Get.back();
                 },
                 okOnPressed: () async {
+                  Map<String, dynamic> data = {
+                    "trip_id": model.id.toString(),
+                    'status': model.nextStop!.stopId.toString(),
+                  };
                   Get.back();
                   _homeController.setRxRequestStatus(Status.LOADING);
-                  await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
+                  await HomeScreenController().stopTrip(data);
                   await _homeController.tripsCircleApi();
                   Future.delayed(Duration(seconds: 2));
                   _homeController.setRxRequestStatus(Status.COMPLETED);
@@ -293,9 +301,12 @@ final _homeController = Get.put(HomeScreenController());
                   Get.back();
                 },
                 okOnPressed: () async {
+                  Map<String, dynamic> data = {
+                    "trip_id": model.id.toString(),                    "stop_id": model.nextStop!.stopId.toString(),
+                  };
                   Get.back();
                   _homeController.setRxRequestStatus(Status.LOADING);
-                  await HomeScreenController().stopTrip(model.id!, model.nextStop!.stopId!);
+                  await HomeScreenController().stopTrip(data);
                   await _homeController.tripsCircleApi();
                   Future.delayed(Duration(seconds: 2));
                   _homeController.setRxRequestStatus(Status.COMPLETED);

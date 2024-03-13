@@ -31,6 +31,7 @@ class AllJobCards extends StatelessWidget {
   final double? dropLat;
   final double? dropLng;
   final int? tripId;
+  final bool? isEnable;
   final String distance;
    List<AllTripStops> allTripStops ;
   final CardController _cardController = Get.put(CardController());
@@ -53,7 +54,7 @@ class AllJobCards extends StatelessWidget {
     required this.pickupAddress,
     required this.deliverAddress,
     required this.distance,
-    required this.allTripStops,
+    required this.allTripStops, this.isEnable = false,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -163,6 +164,7 @@ class AllJobCards extends StatelessWidget {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
+                                        isEnable!?
                                         showDialog(
                                             context: context,
                                             barrierDismissible: false,
@@ -183,7 +185,25 @@ class AllJobCards extends StatelessWidget {
 
                                           );
                                         }
-                                        ) ;
+                                        ):
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context){
+                                              return AcceptTripDialog(
+                                                title: "Accept Trip",
+                                                content: "Are you sure you want to Accept this trip?",
+                                                okOnPressed: (){
+                                                  Navigator.pop(context);
+                                                  TripController().acceptTrip(tripId!, 'accepted');
+                                                },
+                                                cancelOnPressed: (){
+                                                  Navigator.pop(context);
+                                                  TripController().acceptTrip(tripId!, 'rejected');
+                                                },
+
+                                              );
+                                            }
+                                        );
 
                                         },
                                         child: Container(
@@ -194,8 +214,8 @@ class AllJobCards extends StatelessWidget {
                                               borderRadius: new BorderRadius.all(Radius.circular(5))),
                                           child: Padding(
                                               padding: const EdgeInsets.all(4.0),
-                                              child: Text(
-                                                "Start",
+                                              child: Text( isEnable!?"Start":
+                                                "Accept",
                                                 style: TextStyle(
                                                     color: kWhiteColor,
                                                     fontSize: 16,

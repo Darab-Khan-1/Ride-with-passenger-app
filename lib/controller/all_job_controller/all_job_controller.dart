@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -12,7 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ride_with_passenger/Services/location_services/location_services.dart';
 import 'package:ride_with_passenger/Services/user_preferences/user_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import '../../constants/app_url/app_url.dart';
 import '../../constants/enums.dart';
 import '../../data/network/network_api_services.dart';
@@ -222,11 +223,33 @@ class HomeScreenController extends GetxController {
     }
   }
 
-  Future<dynamic> stopTrip( int tripId, int nextStopId) async{
+  Future<dynamic> stopTrip(Map<String, dynamic> data) async{
+    try {
+
+      dynamic response = await _apiService.postApi(data, AppUrl.stopTripApi);
+      if(response['status_code'] == 200){
+        // Utils.snackBar('Success', response['message']);
+
+      }
+      else if(response['status_code'] == 401){
+        Utils.snackBar('Error', response['error']);
+        userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+      }
+      else{
+        Utils.snackBar('Error', response['error']);
+      }
+    } on SocketException catch (e) {
+      Utils.snackBar('error', e.message);
+    }
+    catch (e) {
+      Utils.snackBar('error', e.toString());
+      log(e.toString());
+    }
+  }
+  Future<dynamic> resetStopAddress( int tripId, int nextStopId) async{
     try {
       Map<String, dynamic> data = {
-        "trip_id": tripId.toString(),
-        "stop_id": nextStopId.toString(),
+
       };
       dynamic response = await _apiService.postApi(data, AppUrl.stopTripApi);
       if(response['status_code'] == 200){
@@ -248,6 +271,32 @@ class HomeScreenController extends GetxController {
       log(e.toString());
     }
   }
+  Future<dynamic> deleteStop(String tripId, String stopId) async{
+    try {
+      Map<String, dynamic> data = {
+        "trip_id": tripId,
+        "stop_id": stopId,
+      };
+      dynamic response = await _apiService.postApi(data, AppUrl.deleteTripStop);
+      if(response['status_code'] == 200){
+        Utils.snackBar('Success', response['message']);
+
+      }
+      else if(response['status_code'] == 401){
+        userPreference.removeUser().then((value) => Get.offAll(const SplashScreen()));
+      }
+      else{
+        Utils.snackBar('Error', response['message']);
+      }
+    } on SocketException catch (e) {
+      Utils.snackBar('error', e.message);
+    }
+    catch (e) {
+      Utils.snackBar('error', e.toString());
+      log(e.toString());
+    }
+  }
+
 
   Future<dynamic> pickupTrip(int tripId) async{
     try {
@@ -353,5 +402,29 @@ class HomeScreenController extends GetxController {
       print(e.toString());
     }
   }
+
+  Future<String> getAddress(BuildContext context) async {
+    loadingStatusDialog(context, title: "Loading...");
+    const apiKey = AppUrl.googleApiKey;
+    final url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentPosition.value!.latitude},${currentPosition.value!.longitude}&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+    Get.back();
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body);
+      final results = decoded['results'] as List<dynamic>;
+      if (results.isNotEmpty) {
+        final formattedAddress = results[0]['formatted_address'];
+        return formattedAddress;
+      } else {
+        throw 'No address found';
+      }
+    } else {
+      throw 'Failed to get address';
+    }
+  }
+
+
+
 
 }

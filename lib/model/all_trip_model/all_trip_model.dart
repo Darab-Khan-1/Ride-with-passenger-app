@@ -46,6 +46,7 @@ class AllTripData {
   String? dropLat;
   String? dropLong;
   List<AllTripStops>? stops;
+  Attributes? attributes;
 
   AllTripData(
       {this.id,
@@ -62,7 +63,8 @@ class AllTripData {
         this.long,
         this.dropLat,
         this.dropLong,
-        this.stops});
+        this.stops,
+        this.attributes});
 
   AllTripData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -85,6 +87,9 @@ class AllTripData {
         stops!.add(new AllTripStops.fromJson(v));
       });
     }
+    attributes = json['attributes'] != null
+        ? new Attributes.fromJson(json['attributes'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -105,6 +110,9 @@ class AllTripData {
     data['drop_long'] = this.dropLong;
     if (this.stops != null) {
       data['stops'] = this.stops!.map((v) => v.toJson()).toList();
+    }
+    if (this.attributes != null) {
+      data['attributes'] = this.attributes!.toJson();
     }
     return data;
   }
@@ -163,6 +171,51 @@ class AllTripStops {
     data['type'] = this.type;
     data['exit_time'] = this.exitTime;
     data['description'] = this.description;
+    return data;
+  }
+}
+
+class Attributes {
+  int? id;
+  int? refrenceId;
+  String? name;
+  String? value;
+  String? type;
+  int? visibleToDriver;
+  String? createdAt;
+  String? updatedAt;
+
+  Attributes(
+      {this.id,
+        this.refrenceId,
+        this.name,
+        this.value,
+        this.type,
+        this.visibleToDriver,
+        this.createdAt,
+        this.updatedAt});
+
+  Attributes.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    refrenceId = json['refrence_id'];
+    name = json['name'];
+    value = json['value'];
+    type = json['type'];
+    visibleToDriver = json['visible_to_driver'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['refrence_id'] = this.refrenceId;
+    data['name'] = this.name;
+    data['value'] = this.value;
+    data['type'] = this.type;
+    data['visible_to_driver'] = this.visibleToDriver;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

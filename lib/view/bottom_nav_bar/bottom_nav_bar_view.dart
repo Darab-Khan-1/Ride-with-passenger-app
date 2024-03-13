@@ -6,6 +6,7 @@ import 'package:ride_with_passenger/view/home_screen/home_screen.dart';
 import 'package:ride_with_passenger/view/profile_screen/profile_screen.dart';
 import 'package:ride_with_passenger/view/trips_screen/trips_screen.dart';
 import '../../constants/colors.dart';
+import '../trips_screen/trip_tab_screen.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
   const BottomNavBarScreen({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> with TickerProv
           controller: _tabController,
           children:  [
             HomeScreen(),
-            TripsScreen(),
+            TripTabScreen(),
             HistoryScreen(),
             ProfileScreen()
 

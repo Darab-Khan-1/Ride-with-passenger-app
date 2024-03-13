@@ -8,9 +8,14 @@ import '../../Widgets/cards/all_job_card/all_job_card.dart';
 import '../../constants/colors.dart';
 import '../../controller/all_job_controller/all_job_controller.dart';
 
-class TripsScreen extends StatelessWidget {
-  TripsScreen({super.key});
+class MyTripsScreen extends StatefulWidget {
+  MyTripsScreen({super.key});
 
+  @override
+  State<MyTripsScreen> createState() => _MyTripsScreenState();
+}
+
+class _MyTripsScreenState extends State<MyTripsScreen> {
   DateTime? parsedDate;
 
   DateTime? parsePickUpDate;
@@ -20,7 +25,7 @@ class TripsScreen extends StatelessWidget {
     return GetBuilder<TripController>(
       init: TripController(),
         builder: (controller) {
-      return Obx(() => Container(
+      return Obx(() => SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: controller.isloading.value
@@ -32,20 +37,20 @@ class TripsScreen extends StatelessWidget {
             :
         SmartRefresher(
           enablePullDown: true,
-          controller: controller.refreshHomeController,
+          controller: controller.refreshMyTripsController,
           onRefresh: () {
-            controller.getAlltrips();
-            controller.refreshHomeController.refreshCompleted();
+            controller.getAllMyTrips();
+            controller.refreshMyTripsController.refreshCompleted();
           },
-          child: controller.allTrips.value.data!.length == 0
-              ? Center(
+          child: controller.myTrips.value.data == null
+              ? const Center(
             child: Text("No Trips"),
           )
               : ListView.builder(
-              itemCount: controller.allTrips.value.data!.length,
+              itemCount: controller.myTrips.value.data!.length,
               itemBuilder:
                   (BuildContext context, int index) {
-                var data = controller.allTrips.value.data![index];
+                var data = controller.myTrips.value.data![index];
                 String pickUpDateString = data.pickupDate!;
                 if (pickUpDateString != "") {
                   try {
@@ -74,11 +79,11 @@ class TripsScreen extends StatelessWidget {
                   distance: data.estimatedDistance!,
                   allTripStops: data.stops!,
                   tripId: data.id!,
+                  isEnable: true,
                 );
               }),
         ),
       ));
-    }
-    );
+    });
   }
 }
